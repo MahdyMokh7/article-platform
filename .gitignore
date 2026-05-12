@@ -1,3 +1,117 @@
+########################################
+# My customzied
+
+# =========================
+# Maven
+# =========================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# Java
+# =========================
+*.class
+*.jar
+*.war
+*.ear
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# IDEs
+# =========================
+
+# IntelliJ
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# NetBeans
+nbproject/private/
+build/
+dist/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Large files / archives
+# =========================
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+*.iso
+
+# Videos
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Large datasets / binaries
+*.bin
+*.dat
+*.db
+
+# Images (optional)
+# Uncomment if you don't want images
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+
+# =========================
+# Common generated folders
+# =========================
+out/
+build/
+logs/
+tmp/
+temp/
+
+# Ignore any nested target/build folders
+**/target/
+**/build/
+**/out/
+
+# Ignore large asset folders anywhere
+**/downloads/
+**/datasets/
+**/data/
+**/assets/
+
+
+
+
+
+
+
+
+###########################################
+
+
 # Compiled class file
 *.class
 
