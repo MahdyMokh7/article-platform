@@ -1,0 +1,380 @@
+/**
+ * Article Card Component Styles
+ *
+ * Features:
+ * - Responsive design (mobile-first)
+ * - Smooth hover animations
+ * - Dark mode support via CSS variables
+ * - Accessibility focus states
+ * - Print-friendly styles
+ */
+
+/* ============================
+   CSS Variables (Theme Ready)
+   ============================ */
+
+.card {
+  /* Colors */
+  --card-bg: #ffffff;
+  --card-border: #e0e0e0;
+  --card-shadow: rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: rgba(0, 0, 0, 0.12);
+  --title-color: #2c3e50;
+  --title-hover: #3498db;
+  --text-color: #444444;
+  --text-muted: #666666;
+  --meta-color: #888888;
+  --accent-color: #3498db;
+  --accent-hover: #2980b9;
+  --border-radius: 12px;
+  --transition-speed: 0.25s;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+}
+
+/* Dark mode support (auto-detects system preference) */
+@media (prefers-color-scheme: dark) {
+  .card {
+    --card-bg: #1e1e2e;
+    --card-border: #2d2d3d;
+    --card-shadow: rgba(0, 0, 0, 0.3);
+    --title-color: #e0e0e0;
+    --text-color: #b0b0b0;
+    --text-muted: #909090;
+    --meta-color: #808080;
+  }
+}
+
+/* ============================
+   Main Card Styles
+   ============================ */
+
+.card {
+  display: flex;
+  gap: var(--spacing-md);
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+}
+
+/* Hover effect */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--card-shadow-hover);
+  border-color: transparent;
+}
+
+/* Focus state for accessibility */
+.card:focus-within {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Animation for entrance */
+.card.animate {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Compact mode */
+.card.compact {
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+}
+
+.card.compact .title {
+  font-size: 1rem;
+}
+
+.card.compact .abstract {
+  font-size: 0.875rem;
+  -webkit-line-clamp: 2;
+}
+
+/* ============================
+   Avatar Section
+   ============================ */
+
+.avatarSection {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: white;
+  transition: transform var(--transition-speed) ease;
+}
+
+.card:hover .avatar {
+  transform: scale(1.05);
+}
+
+.avatarText {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Citation badge on avatar */
+.citationBadge {
+  position: absolute;
+  bottom: -4px;
+  right: -8px;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  border-radius: 20px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.citationIcon {
+  font-size: 0.65rem;
+}
+
+.citationCount {
+  font-weight: 700;
+}
+
+/* ============================
+   Content Section
+   ============================ */
+
+.content {
+  flex: 1;
+  min-width: 0; /* Prevents overflow in flex containers */
+}
+
+/* Title */
+.titleLink {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--title-color);
+  transition: color var(--transition-speed) ease;
+  line-height: 1.4;
+}
+
+.titleLink:hover .title {
+  color: var(--title-hover);
+}
+
+/* Meta information */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.8rem;
+  color: var(--meta-color);
+}
+
+.date {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.citationInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metaIcon {
+  font-size: 0.75rem;
+}
+
+/* Abstract text */
+.abstract {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--text-color);
+  line-height: 1.5;
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Read more link */
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: gap var(--transition-speed) ease;
+}
+
+.readMore:hover {
+  gap: 10px;
+  color: var(--accent-hover);
+}
+
+.readMore:hover .arrow {
+  transform: translateX(2px);
+}
+
+.arrow {
+  transition: transform var(--transition-speed) ease;
+  font-size: 1rem;
+}
+
+/* ============================
+   Responsive Design
+   ============================ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .citationBadge {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .card {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+  }
+
+  .avatarSection {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .citationBadge {
+    position: static;
+    display: inline-flex;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .meta {
+    font-size: 0.7rem;
+    gap: var(--spacing-sm);
+  }
+
+  .abstract {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+  }
+}
+
+/* ============================
+   Print Styles
+   ============================ */
+
+@media print {
+  .card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+    transform: none;
+  }
+
+  .avatar {
+    background-color: #ccc !important;
+    color: black;
+  }
+
+  .readMore {
+    display: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
+
+/* ============================
+   Loading Skeleton (Prepared)
+   ============================ */
+
+.card.skeleton {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.card.skeleton .avatar {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.card.skeleton .title,
+.card.skeleton .abstract,
+.card.skeleton .meta {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

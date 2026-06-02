@@ -1,0 +1,479 @@
+/**
+ * Search Bar Component Styles
+ *
+ * Features:
+ * - Modern glass morphism design
+ * - Smooth focus transitions
+ * - Loading animation
+ * - Recent searches dropdown
+ * - Keyboard shortcut visualization
+ * - Responsive design
+ * - Dark mode support
+ */
+
+/* ============================
+   CSS Variables
+   ============================ */
+
+.searchContainer {
+  /* Colors */
+  --search-bg: #ffffff;
+  --search-border: #e0e0e0;
+  --search-border-focus: #3498db;
+  --search-shadow: rgba(0, 0, 0, 0.08);
+  --search-shadow-focus: rgba(52, 152, 219, 0.25);
+  --text-primary: #2c3e50;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --icon-color: #aaa;
+  --clear-button: #999;
+  --clear-button-hover: #e74c3c;
+  --kbd-bg: #f5f5f5;
+  --kbd-border: #ddd;
+  --recent-bg: #ffffff;
+  --recent-hover: #f5f5f5;
+  --recent-border: #e0e0e0;
+
+  /* Spacing */
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 24px;
+
+  /* Effects */
+  --transition-speed: 0.2s;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .searchContainer {
+    --search-bg: #2d2d3d;
+    --search-border: #3d3d4d;
+    --search-border-focus: #4ecdc4;
+    --search-shadow-focus: rgba(78, 205, 196, 0.25);
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-muted: #808080;
+    --icon-color: #888;
+    --clear-button: #aaa;
+    --kbd-bg: #3d3d4d;
+    --kbd-border: #4d4d5d;
+    --recent-bg: #2d2d3d;
+    --recent-hover: #3d3d4d;
+    --recent-border: #3d3d4d;
+  }
+}
+
+/* ============================
+   Main Container
+   ============================ */
+
+.searchContainer {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Form */
+.form {
+  position: relative;
+}
+
+/* Input Wrapper */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--search-bg);
+  border: 2px solid var(--search-border);
+  border-radius: var(--border-radius-lg);
+  transition: all var(--transition-speed) ease;
+}
+
+.searchContainer.focused .inputWrapper {
+  border-color: var(--search-border-focus);
+  box-shadow: 0 0 0 3px var(--search-shadow-focus);
+}
+
+/* ============================
+   Search Icon
+   ============================ */
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  font-size: 1.1rem;
+  color: var(--icon-color);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+}
+
+.loadingSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--search-border);
+  border-top-color: var(--search-border-focus);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================
+   Input Field
+   ============================ */
+
+.input {
+  flex: 1;
+  padding: 14px 16px 14px 48px;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  outline: none;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================
+   Clear Button
+   ============================ */
+
+.clearButton {
+  position: absolute;
+  right: 100px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--clear-button);
+  transition: color var(--transition-speed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.clearButton:hover {
+  color: var(--clear-button-hover);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ============================
+   Submit Button
+   ============================ */
+
+.submitButton {
+  padding: 10px 20px;
+  margin: 4px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  white-space: nowrap;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================
+   Keyboard Shortcut Hint
+   ============================ */
+
+.shortcutHint {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.kbd {
+  background-color: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.hintText {
+  margin-left: 2px;
+}
+
+/* ============================
+   Hint Text
+   ============================ */
+
+.hint {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  min-height: 24px;
+}
+
+.hintWarning {
+  color: #e67e22;
+}
+
+.hintInfo {
+  color: var(--text-muted);
+}
+
+/* ============================
+   Recent Searches Dropdown
+   ============================ */
+
+.recentDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background-color: var(--recent-bg);
+  border: 1px solid var(--recent-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--recent-border);
+}
+
+.recentTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.clearRecentButton {
+  background: none;
+  border: none;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--transition-speed);
+}
+
+.clearRecentButton:hover {
+  color: var(--clear-button-hover);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.recentList {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.recentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-speed);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.recentItem:hover {
+  background-color: var(--recent-hover);
+}
+
+.recentIcon {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.recentTerm {
+  flex: 1;
+}
+
+/* ============================
+   Loading Overlay & Bar
+   ============================ */
+
+.loadingOverlay {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.loadingBar {
+  width: 100%;
+  height: 100%;
+  background-color: var(--search-border);
+}
+
+.loadingBarFill {
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--search-border-focus), #4ecdc4);
+  border-radius: 3px;
+  animation: loading 1s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(200%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* ============================
+   Responsive Design
+   ============================ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .input {
+    padding: 12px 16px 12px 44px;
+    font-size: 0.95rem;
+  }
+
+  .submitButton {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  .clearButton {
+    right: 85px;
+  }
+
+  .shortcutHint {
+    display: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .inputWrapper {
+    flex-wrap: wrap;
+  }
+
+  .input {
+    width: 100%;
+    padding: 12px 44px 12px 44px;
+  }
+
+  .submitButton {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    padding: 0 16px;
+  }
+
+  .clearButton {
+    right: 80px;
+  }
+
+  .hint {
+    font-size: 0.7rem;
+  }
+
+  .recentDropdown {
+    max-height: 300px;
+  }
+
+  .recentItem {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================
+   Reduced Motion
+   ============================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .recentDropdown,
+  .loadingBarFill {
+    animation: none;
+  }
+
+  .submitButton:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ============================
+   Print Styles
+   ============================ */
+
+@media print {
+  .searchContainer {
+    display: none;
+  }
+}
