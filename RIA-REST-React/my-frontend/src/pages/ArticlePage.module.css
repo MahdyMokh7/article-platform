@@ -1,0 +1,270 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.breadcrumbLink {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.breadcrumbLink:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbSeparator {
+  color: #ccc;
+}
+
+.breadcrumbCurrent {
+  color: #666;
+}
+
+.article {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.metaIcon {
+  font-size: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.abstractSection {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.abstract {
+  color: #444;
+  line-height: 1.6;
+}
+
+.bodySection {
+  margin-bottom: 2rem;
+}
+
+.body {
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.referencesSection {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px solid #eee;
+}
+
+.referencesList {
+  list-style: none;
+  padding: 0;
+}
+
+.referenceItem {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.referenceLink {
+  color: #3498db;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.referenceLink:hover {
+  text-decoration: underline;
+}
+
+.referenceBullet {
+  color: #3498db;
+  font-size: 1.2rem;
+}
+
+.referenceCitation {
+  font-size: 0.75rem;
+  color: #666;
+  margin-left: 0.5rem;
+}
+
+.actions {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.backToHome {
+  display: inline-block;
+  color: #3498db;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.backToHome:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.errorIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.errorMessage {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.errorActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.homeButton, .backButton {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.homeButton {
+  background-color: #3498db;
+  color: white;
+  border: none;
+}
+
+.backButton {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+}
+
+.skeleton {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.skeletonTitle {
+  height: 32px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  width: 70%;
+}
+
+.skeletonMeta {
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  width: 40%;
+}
+
+.skeletonAbstract {
+  height: 100px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.skeletonBody {
+  height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .article {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
