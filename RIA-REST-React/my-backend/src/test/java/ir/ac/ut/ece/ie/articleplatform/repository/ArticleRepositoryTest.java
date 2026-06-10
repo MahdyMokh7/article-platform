@@ -4,6 +4,7 @@ import ir.ac.ut.ece.ie.articleplatform.model.Article;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ArticleRepositoryTest {
 
     @Autowired
@@ -21,18 +23,20 @@ class ArticleRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    private Article article1;
-    private Article article2;
-
     @BeforeEach
     void setUp() {
-        article1 = new Article();
+        // Clear existing data first
+        articleRepository.deleteAll();
+        entityManager.flush();
+        
+        // Then add test data
+        Article article1 = new Article();
         article1.setTitle("First Article");
         article1.setAbstractText("Abstract one");
         article1.setBody("Body one");
         article1.setPublicationDate(LocalDateTime.now().minusDays(1));
 
-        article2 = new Article();
+        Article article2 = new Article();
         article2.setTitle("Second Article");
         article2.setAbstractText("Abstract two");
         article2.setBody("Body two");
