@@ -1,9 +1,12 @@
 package com.mehdymokhtari.articleplatform.service;
 
-import com.mehdymokhtari.articleplatform.exception.ArticleNotFoundException;
 import com.mehdymokhtari.articleplatform.dto.request.CreateArticleRequest;
+import com.mehdymokhtari.articleplatform.exception.ArticleAccessDeniedException;
+import com.mehdymokhtari.articleplatform.exception.ArticleNotFoundException;
 import com.mehdymokhtari.articleplatform.exception.DuplicateTitleException;
 import com.mehdymokhtari.articleplatform.model.entity.Article;
+import com.mehdymokhtari.articleplatform.model.entity.User;
+import com.mehdymokhtari.articleplatform.model.enums.Role;
 import com.mehdymokhtari.articleplatform.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,33 +34,47 @@ class ArticleServiceTest {
     private ArticleService articleService;
 
     private Article testArticle;
-    private CreateArticleRequest testCreateDTO;
+    private User testAuthor;
+    private User otherUser;
+    private CreateArticleRequest testCreateRequest;
 
     @BeforeEach
     void setUp() {
+        testAuthor = new User();
+        testAuthor.setId(1L);
+        testAuthor.setUsername("testuser");
+        testAuthor.setEmail("test@example.com");
+        testAuthor.setPasswordHash("hashedPassword");
+        testAuthor.setRole(Role.ROLE_USER);
+
+        otherUser = new User();
+        otherUser.setId(2L);
+        otherUser.setUsername("otheruser");
+        otherUser.setEmail("other@example.com");
+        otherUser.setPasswordHash("hashedPassword");
+        otherUser.setRole(Role.ROLE_USER);
+
         testArticle = new Article();
         testArticle.setId(1L);
         testArticle.setTitle("Test Article");
         testArticle.setAbstractText("Test Abstract");
         testArticle.setBody("Test Body");
         testArticle.setPublicationDate(LocalDateTime.now());
+        testArticle.setAuthor(testAuthor);
 
-        testCreateDTO = new CreateArticleRequest();
-        testCreateDTO.setTitle("New Article");
-        testCreateDTO.setAbstractText("New Abstract");
-        testCreateDTO.setBody("New Body");
+        testCreateRequest = new CreateArticleRequest();
+        testCreateRequest.setTitle("New Article");
+        testCreateRequest.setAbstractText("New Abstract");
+        testCreateRequest.setBody("New Body");
     }
 
     @Test
     void getAllArticlesSortedByDate_ShouldReturnArticlesSortedDescending() {
-        // Arrange
         List<Article> expectedArticles = Arrays.asList(testArticle);
         when(articleRepository.findAllByOrderByPublicationDateDesc()).thenReturn(expectedArticles);
 
-        // Act
         List<Article> actualArticles = articleService.getAllArticlesSortedByDate();
 
-        // Assert
         assertNotNull(actualArticles);
         assertEquals(1, actualArticles.size());
         verify(articleRepository, times(1)).findAllByOrderByPublicationDateDesc();
@@ -63,7 +82,6 @@ class ArticleServiceTest {
 
     @Test
     void searchArticles_WhenTermExists_ShouldReturnTitleMatchesFirst() {
-        // Arrange
         String searchTerm = "Test";
         Article titleMatch = testArticle;
         Article abstractMatch = new Article();
@@ -75,93 +93,188 @@ class ArticleServiceTest {
         when(articleRepository.findByAbstractTextContainingIgnoreCase(searchTerm))
                 .thenReturn(Arrays.asList(abstractMatch));
 
-        // Act
         List<Article> results = articleService.searchArticles(searchTerm);
 
-        // Assert
         assertEquals(2, results.size());
         assertEquals(titleMatch.getTitle(), results.get(0).getTitle());
     }
 
     @Test
     void searchArticles_WhenTermIsEmpty_ShouldReturnEmptyList() {
-        // Act
         List<Article> results = articleService.searchArticles("");
 
-        // Assert
+        assertTrue(results.isEmpty());
+        verify(articleRepository, never()).findByTitleContainingIgnoreCase(any());
+    }
+
+    @Test
+    void searchArticles_WhenTermIsNull_ShouldReturnEmptyList() {
+        List<Article> results = articleService.searchArticles(null);
+
         assertTrue(results.isEmpty());
         verify(articleRepository, never()).findByTitleContainingIgnoreCase(any());
     }
 
     @Test
     void isTitleUnique_WhenTitleDoesNotExist_ShouldReturnTrue() {
-        // Arrange
         when(articleRepository.existsByTitle("Unique Title")).thenReturn(false);
 
-        // Act
         boolean isUnique = articleService.isTitleUnique("Unique Title");
 
-        // Assert
         assertTrue(isUnique);
     }
 
     @Test
     void isTitleUnique_WhenTitleExists_ShouldReturnFalse() {
-        // Arrange
         when(articleRepository.existsByTitle("Existing Title")).thenReturn(true);
 
-        // Act
         boolean isUnique = articleService.isTitleUnique("Existing Title");
 
-        // Assert
         assertFalse(isUnique);
     }
 
     @Test
     void getArticleById_WhenArticleExists_ShouldReturnArticle() {
-        // Arrange
         when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
 
-        // Act
         Article found = articleService.getArticleById(1L);
 
-        // Assert
         assertNotNull(found);
         assertEquals("Test Article", found.getTitle());
     }
 
     @Test
     void getArticleById_WhenArticleDoesNotExist_ShouldThrowException() {
-        // Arrange
         when(articleRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(ArticleNotFoundException.class,
                 () -> articleService.getArticleById(999L));
     }
 
     @Test
     void createArticle_WithUniqueTitle_ShouldSaveArticle() {
-        // Arrange
         when(articleRepository.existsByTitle("New Article")).thenReturn(false);
         when(articleRepository.save(any(Article.class))).thenReturn(testArticle);
 
-        // Act
-        Article saved = articleService.createArticle(testCreateDTO);
+        Article saved = articleService.createArticle(testCreateRequest, testAuthor);
 
-        // Assert
         assertNotNull(saved);
         verify(articleRepository, times(1)).save(any(Article.class));
     }
 
     @Test
     void createArticle_WithDuplicateTitle_ShouldThrowException() {
-        // Arrange
         when(articleRepository.existsByTitle("New Article")).thenReturn(true);
 
-        // Act & Assert
         assertThrows(DuplicateTitleException.class,
-                () -> articleService.createArticle(testCreateDTO));
+                () -> articleService.createArticle(testCreateRequest, testAuthor));
         verify(articleRepository, never()).save(any(Article.class));
+    }
+
+    @Test
+    void createArticle_WithReferences_ShouldSaveArticleWithReferences() {
+        CreateArticleRequest requestWithReferences = new CreateArticleRequest();
+        requestWithReferences.setTitle("Article With References");
+        requestWithReferences.setAbstractText("Abstract");
+        requestWithReferences.setBody("Body");
+        requestWithReferences.setReferenceIds(Arrays.asList(2L, 3L));
+
+        Article reference1 = new Article();
+        reference1.setId(2L);
+        Article reference2 = new Article();
+        reference2.setId(3L);
+
+        when(articleRepository.existsByTitle("Article With References")).thenReturn(false);
+        when(articleRepository.findAllById(Arrays.asList(2L, 3L))).thenReturn(Arrays.asList(reference1, reference2));
+        when(articleRepository.save(any(Article.class))).thenReturn(testArticle);
+
+        Article saved = articleService.createArticle(requestWithReferences, testAuthor);
+
+        assertNotNull(saved);
+        verify(articleRepository, times(1)).findAllById(Arrays.asList(2L, 3L));
+        verify(articleRepository, times(1)).save(any(Article.class));
+    }
+
+    @Test
+    void updateArticle_WhenAuthorIsOwner_ShouldUpdateArticle() {
+        when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
+        when(articleRepository.existsByTitle("New Article")).thenReturn(false);
+        when(articleRepository.save(any(Article.class))).thenReturn(testArticle);
+
+        Article updated = articleService.updateArticle(1L, testCreateRequest, testAuthor);
+
+        assertNotNull(updated);
+        verify(articleRepository, times(1)).save(any(Article.class));
+    }
+
+    @Test
+    void updateArticle_WhenAuthorIsNotOwner_ShouldThrowException() {
+        when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
+
+        assertThrows(ArticleAccessDeniedException.class,
+                () -> articleService.updateArticle(1L, testCreateRequest, otherUser));
+        verify(articleRepository, never()).save(any(Article.class));
+    }
+
+    @Test
+    void updateArticle_WhenTitleChangesAndIsUnique_ShouldUpdate() {
+        CreateArticleRequest updateRequest = new CreateArticleRequest();
+        updateRequest.setTitle("Updated Title");
+        updateRequest.setAbstractText("Updated Abstract");
+        updateRequest.setBody("Updated Body");
+
+        when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
+        when(articleRepository.existsByTitle("Updated Title")).thenReturn(false);
+        when(articleRepository.save(any(Article.class))).thenReturn(testArticle);
+
+        Article updated = articleService.updateArticle(1L, updateRequest, testAuthor);
+
+        assertNotNull(updated);
+        verify(articleRepository, times(1)).existsByTitle("Updated Title");
+    }
+
+    @Test
+    void updateArticle_WhenTitleChangesAndIsNotUnique_ShouldThrowException() {
+        CreateArticleRequest updateRequest = new CreateArticleRequest();
+        updateRequest.setTitle("Existing Title");
+        updateRequest.setAbstractText("Updated Abstract");
+        updateRequest.setBody("Updated Body");
+
+        when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
+        when(articleRepository.existsByTitle("Existing Title")).thenReturn(true);
+
+        assertThrows(DuplicateTitleException.class,
+                () -> articleService.updateArticle(1L, updateRequest, testAuthor));
+        verify(articleRepository, never()).save(any(Article.class));
+    }
+
+    @Test
+    void deleteArticle_WhenAuthorIsOwner_ShouldDeleteArticle() {
+        when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
+
+        articleService.deleteArticle(1L, testAuthor);
+
+        verify(articleRepository, times(1)).delete(testArticle);
+    }
+
+    @Test
+    void deleteArticle_WhenAuthorIsNotOwner_ShouldThrowException() {
+        when(articleRepository.findById(1L)).thenReturn(Optional.of(testArticle));
+
+        assertThrows(ArticleAccessDeniedException.class,
+                () -> articleService.deleteArticle(1L, otherUser));
+        verify(articleRepository, never()).delete(any(Article.class));
+    }
+
+    @Test
+    void getArticlesSortedByCitationCount_ShouldReturnSortedList() {
+        List<Article> expectedArticles = Arrays.asList(testArticle);
+        when(articleRepository.findAllOrderByCitationCountDesc()).thenReturn(expectedArticles);
+
+        List<Article> actualArticles = articleService.getArticlesSortedByCitationCount();
+
+        assertNotNull(actualArticles);
+        assertEquals(1, actualArticles.size());
+        verify(articleRepository, times(1)).findAllOrderByCitationCountDesc();
     }
 }
