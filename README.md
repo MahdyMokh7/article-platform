@@ -1,4 +1,3 @@
-```markdown
 # 📄 Article Platform
 
 > A modern full-stack article publishing platform with secure authentication, RESTful API, and containerized deployment.
@@ -47,25 +46,30 @@ Article Platform is a production-ready web application that enables users to pub
 ### Backend
 | Technology | Purpose |
 |------------|---------|
-| **Java 17** | Core programming language |
-| **Spring Boot 3.x** | Application framework & dependency injection |
+| **Java 22** | Core programming language |
+| **Spring Boot 3.3.0** | Application framework & dependency injection |
 | **Spring Security** | Authentication & authorization |
 | **Spring Data JPA** | Database operations & ORM |
 | **Hibernate** | JPA implementation |
-| **PostgreSQL** | Relational database |
-| **Maven** | Build automation |
+| **PostgreSQL 42.7.3** | Relational database driver |
+| **Maven** | Build automation & dependency management |
 | **JWT** | Token-based authentication |
 | **BCrypt** | Password hashing |
+| **Spring Validation** | Request validation |
 
 ### Frontend
 | Technology | Purpose |
 |------------|---------|
-| **React 18** | UI library |
-| **Vite** | Build tool & development server |
-| **React Router v6** | Client-side routing |
+| **React 19** | UI library |
+| **Vite 8** | Build tool & development server |
+| **React Router v7** | Client-side routing |
 | **Axios** | HTTP client for API communication |
+| **React Toastify** | Toast notifications for system messages |
 | **CSS Modules** | Component-scoped styling |
-| **ESLint** | Code quality & consistency |
+| **ESLint 10** | Code quality & consistency |
+| **Vitest 4** | Unit testing framework |
+| **Testing Library** | React component testing |
+| **jsdom** | DOM environment for testing |
 
 ### Infrastructure
 | Technology | Purpose |
@@ -91,22 +95,30 @@ article-platform/
 │   │   │   │   ├── model/          # JPA entities
 │   │   │   │   ├── dto/            # Data transfer objects
 │   │   │   │   ├── exception/      # Global exception handling
+│   │   │   │   ├── DataInitializer.java  # Initial data loader
 │   │   │   │   └── ArticlePlatformApplication.java
 │   │   │   └── resources/
 │   │   │       └── application.yml
 │   │   └── test/
-│   ├── pom.xml
-│   └── Dockerfile
+│   ├── pom.xml                   # Maven dependencies
+│   ├── Dockerfile                # Backend container build
+│   ├── test-api.http             # HTTP client test file (IntelliJ)
+│   └── test-api.bat              # Windows API test script
 ├── frontend/                    # React SPA
 │   ├── src/
 │   │   ├── components/          # Reusable UI components
 │   │   ├── pages/               # Page components
-│   │   ├── services/            # API service layer
-│   │   ├── App.jsx              # Root component
-│   │   └── main.jsx             # Application entry point
-│   ├── public/
-│   ├── package.json
-│   ├── vite.config.js
+│   │   ├── services/            # API service layer (Axios)
+│   │   ├── test/                # Test setup and utilities
+│   │   ├── App.jsx              # Root component with routing
+│   │   ├── App.module.css       # Root component styles
+│   │   ├── main.jsx             # Application entry point
+│   │   └── index.css            # Global styles
+│   ├── public/                  # Static assets
+│   ├── .env                     # Environment variables
+│   ├── index.html               # HTML template
+│   ├── package.json             # NPM dependencies
+│   ├── vite.config.js           # Vite configuration with Vitest
 │   └── Dockerfile
 ├── docker-compose.yaml          # Multi-container orchestration
 ├── docs/                        # Project documentation
@@ -123,15 +135,16 @@ article-platform/
 ### Prerequisites
 
 - **Docker** 20.10+ and **Docker Compose** 2.0+
-- **Java** 17 (for local development)
+- **Java** 22 (for local development)
 - **Maven** 3.8+ (for local development)
+- **PostgreSQL** 15+ (for local development without Docker)
 - **Node.js** 18+ and **NPM** (for local development)
 
 ### Quick Start with Docker
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/article-platform.git
+   git clone https://github.com/MahdyMokh7/article-platform.git
    cd article-platform
    ```
 
@@ -189,7 +202,10 @@ npm run dev
 ### Articles
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/articles` | Get all articles with search |
+| GET | `/api/articles` | Get all articles |
+| GET | `/api/articles/search?q={query}` | Search articles by title or abstract |
+| GET | `/api/articles/popular` | Get articles sorted by citation count |
+| GET | `/api/articles/check-title?title={title}` | Check if article title exists |
 | GET | `/api/articles/{id}` | Get article by ID |
 | POST | `/api/articles` | Create a new article (auth required) |
 | PUT | `/api/articles/{id}` | Update an article (auth required) |
@@ -205,8 +221,10 @@ npm run dev
 ### References
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/articles/{id}/references` | Get article references |
+| GET | `/api/articles/{id}/references` | Get articles referenced by this article |
 | GET | `/api/articles/{id}/citations` | Get articles citing this article |
+
+> **Note:** All API endpoints are prefixed with `/api`. The server runs on `http://localhost:8080`.
 
 ---
 
@@ -215,13 +233,17 @@ npm run dev
 ### Backend
 ```bash
 cd backend
-mvn test
+mvn test                    # Run all tests
+mvn clean install           # Clean, compile, and run tests
 ```
 
 ### Frontend
 ```bash
 cd frontend
-npm test
+npm test                # Run tests with Vitest
+npm run test:ui         # Run tests with UI interface
+npm run test:run        # Run tests once
+npm run coverage        # Run tests with coverage report
 ```
 
 ---
@@ -282,6 +304,15 @@ FRONTEND_PORT=3000
 
 ---
 
+## 🙏 Acknowledgments
+
+- Open-source community for amazing tools and libraries
+- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
+- [React Documentation](https://reactjs.org/docs)
+- [Docker Documentation](https://docs.docker.com)
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
@@ -295,17 +326,3 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 - 🐙 GitHub: [@MahdyMokh7](https://github.com/MahdyMokh7)
 - 🔗 LinkedIn: [Mehdy Mokhtari](https://linkedin.com/in/mehdymokhtari)
 
-
----
-
-## 🙏 Acknowledgments
-
-- Open-source community for amazing tools and libraries
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [React Documentation](https://reactjs.org/docs)
-- [Docker Documentation](https://docs.docker.com)
-
----
-
-**Built with ❤️ using Spring Boot, React, and PostgreSQL**
-```
