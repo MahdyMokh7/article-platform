@@ -16,6 +16,7 @@ public class ArticleDetailResponse extends ArticleSummaryResponse {
     }
 
     public ArticleDetailResponse() {
+        // default constructor for serialization framework
     }
 
     public String getBody() { return body; }

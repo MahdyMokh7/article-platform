@@ -19,6 +19,7 @@ public class ArticleSummaryResponse {
     }
 
     public ArticleSummaryResponse() {
+        // default constructor for serialization framework
     }
 
     // Getters

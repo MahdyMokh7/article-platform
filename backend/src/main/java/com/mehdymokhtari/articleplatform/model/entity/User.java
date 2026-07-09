@@ -57,14 +57,16 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Article> articles = new ArrayList<>();
 
-    public User() {}
+
+    public User() {
+        // Default constructor for JPA.
+    }
 
     public User(String username, String email, String phone, String passwordHash) {
         this.username = username;
         this.email = email;
         this.phone = phone;
         this.passwordHash = passwordHash;
-        this.role = Role.ROLE_USER;
     }
 
     public User(String username, String email, String phone, String passwordHash, Role role) {

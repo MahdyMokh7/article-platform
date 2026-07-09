@@ -109,7 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.21.2</version>
+                <version>3.24.0</version>
                 <executions>
                     <execution>
                         <id>pmd-check</id>
@@ -126,6 +126,7 @@
                     <failOnViolation>false</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
                     <targetJdk>22</targetJdk>
+                    <minimumPriority>3</minimumPriority>
                 </configuration>
             </plugin>
         </plugins>

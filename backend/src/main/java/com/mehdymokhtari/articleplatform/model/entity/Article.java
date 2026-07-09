@@ -48,7 +48,9 @@ public class Article {
     @ManyToMany(mappedBy = "references")
     private Set<Article> citedBy = new HashSet<>();
 
-    public Article() {}
+    public Article() {
+         // Default constructor for JPA.
+    }
 
     public Article(String title, String abstractText, String body) {
         this.title = title;
