@@ -9,6 +9,7 @@ import com.mehdymokhtari.articleplatform.exception.EmailAlreadyExistsException;
 import com.mehdymokhtari.articleplatform.exception.InvalidCredentialsException;
 import com.mehdymokhtari.articleplatform.exception.PhoneAlreadyExistsException;
 import com.mehdymokhtari.articleplatform.exception.UsernameAlreadyExistsException;
+import com.mehdymokhtari.articleplatform.mapper.ArticleMapper;
 import com.mehdymokhtari.articleplatform.model.entity.User;
 import com.mehdymokhtari.articleplatform.model.enums.Role;
 import com.mehdymokhtari.articleplatform.repository.UserRepository;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,17 +31,20 @@ public class AuthService {
     private final PasswordService passwordService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ArticleMapper articleMapper;
 
     public AuthService(
             UserRepository userRepository,
             PasswordService passwordService,
             JwtService jwtService,
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            ArticleMapper articleMapper
     ) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.articleMapper = articleMapper;
     }
 
     public User register(RegisterRequest request) {
@@ -80,15 +83,7 @@ public class AuthService {
     }
 
     public ProfileResponse buildProfileResponse(User user) {
-        List<ArticleSummaryResponse> articleResponses = user.getArticles().stream()
-                .map(article -> new ArticleSummaryResponse(
-                        article.getId(),
-                        article.getTitle(),
-                        article.getAbstractText(),
-                        article.getPublicationDate(),
-                        article.getCitedBy().size()
-                ))
-                .collect(Collectors.toList());
+        List<ArticleSummaryResponse> articleResponses = articleMapper.toSummaryResponseList(user.getArticles());
 
         return new ProfileResponse(
                 user.getId(),

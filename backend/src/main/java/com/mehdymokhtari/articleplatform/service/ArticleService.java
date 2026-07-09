@@ -1,41 +1,47 @@
 package com.mehdymokhtari.articleplatform.service;
 
-import com.mehdymokhtari.articleplatform.model.entity.Article;
-import com.mehdymokhtari.articleplatform.repository.ArticleRepository;
 import com.mehdymokhtari.articleplatform.dto.request.CreateArticleRequest;
-import com.mehdymokhtari.articleplatform.exception.DuplicateTitleException;
+import com.mehdymokhtari.articleplatform.exception.ArticleAccessDeniedException;
 import com.mehdymokhtari.articleplatform.exception.ArticleNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mehdymokhtari.articleplatform.exception.DuplicateTitleException;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
+import com.mehdymokhtari.articleplatform.model.entity.User;
+import com.mehdymokhtari.articleplatform.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
 public class ArticleService {
 
-    @Autowired
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
-    // Get all articles sorted by date (newest first)
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
+
     public List<Article> getAllArticlesSortedByDate() {
         return articleRepository.findAllByOrderByPublicationDateDesc();
     }
 
-    // Search articles - title matches come BEFORE abstract matches
     public List<Article> searchArticles(String term) {
         if (term == null || term.trim().isEmpty()) {
             return new ArrayList<>();
         }
 
-        List<Article> titleMatches = articleRepository.findByTitleContainingIgnoreCase(term);
-        List<Article> abstractMatches = articleRepository.findByAbstractTextContainingIgnoreCase(term);
+        String searchTerm = term.trim();
 
-        // Remove any article that already appears in title matches
+        List<Article> titleMatches = articleRepository.findByTitleContainingIgnoreCase(searchTerm);
+        List<Article> abstractMatches = articleRepository.findByAbstractTextContainingIgnoreCase(searchTerm);
+
         abstractMatches.removeAll(titleMatches);
 
-        // Combine: title matches first, then abstract matches
         List<Article> results = new ArrayList<>();
         results.addAll(titleMatches);
         results.addAll(abstractMatches);
@@ -43,42 +49,73 @@ public class ArticleService {
         return results;
     }
 
-    // Check if title is unique
     public boolean isTitleUnique(String title) {
         return !articleRepository.existsByTitle(title);
     }
 
-    // Get single article by ID
     public Article getArticleById(Long id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new ArticleNotFoundException("Article not found with id: " + id));
     }
 
-    // Create a new article
-    public Article createArticle(CreateArticleRequest dto) {
-        // Validate title uniqueness
-        if (!isTitleUnique(dto.getTitle())) {
-            throw new DuplicateTitleException("An article with title '" + dto.getTitle() + "' already exists");
-        }
+    public Article createArticle(CreateArticleRequest request, User author) {
+        validateTitleUniqueness(request.getTitle());
 
-        // Create new article entity
         Article article = new Article();
-        article.setTitle(dto.getTitle());
-        article.setAbstractText(dto.getAbstractText());
-        article.setBody(dto.getBody());
+        article.setTitle(request.getTitle());
+        article.setAbstractText(request.getAbstractText());
+        article.setBody(request.getBody());
         article.setPublicationDate(LocalDateTime.now());
+        article.setAuthor(author);
 
-        // Bonus: Add references if provided
-        if (dto.getReferenceIds() != null && !dto.getReferenceIds().isEmpty()) {
-            List<Article> references = articleRepository.findAllById(dto.getReferenceIds());
+        if (request.getReferenceIds() != null && !request.getReferenceIds().isEmpty()) {
+            List<Article> references = articleRepository.findAllById(request.getReferenceIds());
             article.setReferences(new HashSet<>(references));
         }
+
+        Article savedArticle = articleRepository.save(article);
+        author.addArticle(savedArticle);
+
+        return savedArticle;
+    }
+
+    public Article updateArticle(Long id, CreateArticleRequest request, User currentUser) {
+        Article article = getArticleById(id);
+
+        validateArticleOwnership(article, currentUser);
+
+        if (!article.getTitle().equals(request.getTitle())) {
+            validateTitleUniqueness(request.getTitle());
+        }
+
+        article.setTitle(request.getTitle());
+        article.setAbstractText(request.getAbstractText());
+        article.setBody(request.getBody());
 
         return articleRepository.save(article);
     }
 
-    // Bonus: Get articles sorted by citation count
+    public void deleteArticle(Long id, User currentUser) {
+        Article article = getArticleById(id);
+
+        validateArticleOwnership(article, currentUser);
+
+        articleRepository.delete(article);
+    }
+
     public List<Article> getArticlesSortedByCitationCount() {
         return articleRepository.findAllOrderByCitationCountDesc();
+    }
+
+    private void validateTitleUniqueness(String title) {
+        if (!isTitleUnique(title)) {
+            throw new DuplicateTitleException("An article with title '" + title + "' already exists");
+        }
+    }
+
+    private void validateArticleOwnership(Article article, User currentUser) {
+        if (!Objects.equals(article.getAuthor().getId(), currentUser.getId())) {
+            throw new ArticleAccessDeniedException("You do not have permission to modify this article");
+        }
     }
 }
