@@ -26,7 +26,6 @@ public class RegisterRequest {
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid phone number format")
     private String phone;
 
-    // Getters and Setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 

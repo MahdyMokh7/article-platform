@@ -1,7 +1,5 @@
 package com.mehdymokhtari.articleplatform.dto.response;
 
-import com.mehdymokhtari.articleplatform.dto.response.ArticleSummaryResponse;
-
 import java.util.List;
 
 public class ProfileResponse {
@@ -20,7 +18,6 @@ public class ProfileResponse {
         this.articles = articles;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
