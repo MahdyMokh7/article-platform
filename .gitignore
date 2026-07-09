@@ -1,9 +1,58 @@
-########################################
-# My customzied
+# ====================================================
+# ARTICLE PLATFORM - Root .gitignore
+# Covers: Backend (Java/Spring/Maven) + Frontend (React/Vite)
+# ====================================================
 
-# =========================
-# Maven
-# =========================
+# ====================================================
+# Operating System Files
+# ====================================================
+.DS_Store
+Thumbs.db
+*.sw?
+*.swo
+*.lock
+Desktop.ini
+
+# ====================================================
+# IDEs and Editors
+# ====================================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+.vscode-test/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# NetBeans
+nbproject/
+nb-configuration.xml
+build/
+dist/
+nbbuild/
+nbdist/
+
+# ====================================================
+# Backend - Java / Maven / Spring Boot
+# ====================================================
+
+# Maven build output
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -14,152 +63,41 @@ release.properties
 # Maven wrapper
 .mvn/wrapper/maven-wrapper.jar
 
-# =========================
-# Java
-# =========================
+# Java compiled files
 *.class
 *.jar
 *.war
 *.ear
+*.jks
 
-# =========================
-# Logs
-# =========================
+# Log files
 *.log
-
-# =========================
-# IDEs
-# =========================
-
-# IntelliJ
-.idea/
-*.iml
-
-# Eclipse
-.project
-.classpath
-.settings/
-
-# VS Code
-.vscode/
-
-# NetBeans
-nbproject/private/
-build/
-dist/
-
-# =========================
-# OS files
-# =========================
-.DS_Store
-Thumbs.db
-
-# =========================
-# Large files / archives
-# =========================
-*.zip
-*.tar
-*.gz
-*.7z
-*.rar
-*.iso
-
-# Videos
-*.mp4
-*.mov
-*.avi
-*.mkv
-
-# Large datasets / binaries
-*.bin
-*.dat
-*.db
-
-# Images (optional)
-# Uncomment if you don't want images
-# *.png
-# *.jpg
-# *.jpeg
-# *.gif
-
-# =========================
-# Common generated folders
-# =========================
-out/
-build/
 logs/
-tmp/
-temp/
+**/logs/
 
-# Ignore any nested target/build folders
-**/target/
-**/build/
-**/out/
+# Backup files
+*.bak
+*.orig
 
-# Ignore large asset folders anywhere
-**/downloads/
-**/datasets/
-**/data/
-**/assets/
+# ====================================================
+# Frontend - React / Vite / NPM
+# ====================================================
 
-
-
-
-
-
-
-
-###########################################
-
-
-# Compiled class file
-*.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
-
-
-
-
-
-# =========================
-# Vite / React Frontend
-# =========================
-
-# Dependencies (always ignore)
+# Dependencies
 node_modules/
 **/node_modules/
 
-# Vite build output
+# Build outputs
 dist/
-**/dist/
 dist-ssr/
+**/dist/
 **/dist-ssr/
 
 # Vite cache
 .vite/
 **/.vite/
 
-# Environment variables (if you have sensitive keys)
+# Environment variables (contains secrets)
 .env
 .env.local
 .env.*.local
@@ -171,18 +109,16 @@ dist-ssr/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 **/npm-debug.log*
 **/yarn-debug.log*
 **/yarn-error.log*
 
-# Package manager locks (optional - team preference)
+# Package manager locks (keep these - uncomment if you want to ignore)
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
-
-# Build artifacts
-**/build/
-**/out/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -193,19 +129,120 @@ vite.config.js.timestamp-*
 **/vite.config.js.timestamp-*
 
 # React / Vite specific temp files
+.parcel-cache/
+.cache/
 **/.parcel-cache/
 **/.cache/
 
-# Coverage directory (if you add testing later)
+# Coverage directory
 coverage/
 **/coverage/
 
+# ====================================================
+# Docker & Containerization
+# ====================================================
+
+# Docker volumes (if mounted locally)
+volumes/
+**/volumes/
+
+# Docker compose overrides (local only)
+docker-compose.override.yml
+docker-compose.*.yml
+
+# ====================================================
+# Build & Generated Files (General)
+# ====================================================
+
+# Build directories
+build/
+out/
+target/
+**/build/
+**/out/
+**/target/
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.iso
+
+# ====================================================
+# Large Files & Data
+# ====================================================
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Large datasets / binaries
+*.bin
+*.dat
+
+# Media files (uncomment if needed)
+# *.mp4
+# *.mov
+# *.avi
+# *.mkv
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+
+# ====================================================
+# Application Specific
+# ====================================================
+
+# Java crash logs
+hs_err_pid*
+replay_pid*
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# ====================================================
 # Miscellaneous
+# ====================================================
+
+# Temporary files
+tmp/
+temp/
+**/tmp/
+**/temp/
+
+# Local development files
 *.local
 **/*.local
 
-# Any nested frontend folders (customize path if needed)
-# Example if frontend is at: /frontend/my-articles-frontend/
-# frontend/**/node_modules/
-# frontend/**/dist/
-# frontend/**/.vite/
+# SSH keys or sensitive files (uncomment if needed)
+# *.pem
+# *.key
+# *.crt
+# *.p12
+
+# ====================================================
+# Documentation build outputs (if any)
+# ====================================================
+
+# API docs generated
+docs/api/generated/
+**/docs/api/generated/
+
+# ====================================================
+# Testing outputs
+# ====================================================
+
+# Test reports
+test-reports/
+**/test-reports/
+surefire-reports/
+**/surefire-reports/
+failsafe-reports/
+**/failsafe-reports/
