@@ -5,7 +5,6 @@ import com.mehdymokhtari.articleplatform.dto.ArticleDetailDTO;
 import com.mehdymokhtari.articleplatform.dto.ArticleSummaryDTO;
 import com.mehdymokhtari.articleplatform.model.Article;
 import com.mehdymokhtari.articleplatform.service.ArticleService;
-import com.mehdymokhtari.articleplatform.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;

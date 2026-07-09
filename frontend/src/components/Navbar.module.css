@@ -14,6 +14,11 @@
    CSS Variables
    ============================ */
 
+:root {
+  --navbar-height: 70px;
+  --navbar-height-mobile: 60px;
+}
+
 .navbar {
   /* Colors */
   --navbar-bg: #ffffff;
@@ -28,8 +33,6 @@
   --mobile-menu-bg: #ffffff;
 
   /* Spacing */
-  --navbar-height: 70px;
-  --navbar-height-mobile: 60px;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
@@ -425,12 +428,8 @@
 
 /* Mobile */
 @media (max-width: 480px) {
-  .navbar {
-    height: var(--navbar-height-mobile);
-  }
-
-  .navbarSpacer {
-    height: var(--navbar-height-mobile);
+  :root {
+    --navbar-height: 60px;
   }
 
   .logoText {
