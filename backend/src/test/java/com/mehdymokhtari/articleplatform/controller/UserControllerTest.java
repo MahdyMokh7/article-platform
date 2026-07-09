@@ -1,0 +1,99 @@
+package com.mehdymokhtari.articleplatform.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mehdymokhtari.articleplatform.dto.request.ChangePasswordRequest;
+import com.mehdymokhtari.articleplatform.dto.request.UpdateProfileRequest;
+import com.mehdymokhtari.articleplatform.dto.response.ProfileResponse;
+import com.mehdymokhtari.articleplatform.model.entity.User;
+import com.mehdymokhtari.articleplatform.service.AuthService;
+import com.mehdymokhtari.articleplatform.service.UserService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private AuthService authService;
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldGetProfile() throws Exception {
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("testuser");
+        user.setEmail("test@example.com");
+        user.setPhone("+989123456789");
+
+        ProfileResponse response = new ProfileResponse(1L, "testuser", "test@example.com", "+989123456789", Collections.emptyList());
+
+        when(authService.buildProfileResponse(any(User.class))).thenReturn(response);
+
+        mockMvc.perform(get("/api/users/profile"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("testuser"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldUpdateProfile() throws Exception {
+        UpdateProfileRequest request = new UpdateProfileRequest();
+        request.setEmail("updated@example.com");
+
+        User updatedUser = new User();
+        updatedUser.setId(1L);
+        updatedUser.setUsername("testuser");
+        updatedUser.setEmail("updated@example.com");
+        updatedUser.setPhone("+989123456789");
+
+        ProfileResponse response = new ProfileResponse(1L, "testuser", "updated@example.com", "+989123456789", Collections.emptyList());
+
+        when(userService.updateProfile(any(User.class), any(UpdateProfileRequest.class))).thenReturn(updatedUser);
+        when(authService.buildProfileResponse(any(User.class))).thenReturn(response);
+
+        mockMvc.perform(put("/api/users/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("updated@example.com"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldChangePassword() throws Exception {
+        ChangePasswordRequest request = new ChangePasswordRequest();
+        request.setCurrentPassword("OldPass123");
+        request.setNewPassword("NewPass456");
+
+        doNothing().when(userService).changePassword(any(User.class), any(ChangePasswordRequest.class));
+
+        mockMvc.perform(put("/api/users/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent());
+    }
+}
