@@ -1,16 +1,16 @@
-package com.mehdymokhtari.articleplatform.dto;
+package com.mehdymokhtari.articleplatform.dto.response;
 
 import java.time.LocalDateTime;
 
-public class ArticleSummaryDTO {
+public class ArticleSummaryResponse {
     private Long id;
     private String title;
     private String abstractText;
     private LocalDateTime publicationDate;
     private int citationCount;
 
-    public ArticleSummaryDTO(Long id, String title, String abstractText,
-                             LocalDateTime publicationDate, int citationCount) {
+    public ArticleSummaryResponse(Long id, String title, String abstractText,
+                                  LocalDateTime publicationDate, int citationCount) {
         this.id = id;
         this.title = title;
         this.abstractText = abstractText;
@@ -18,7 +18,7 @@ public class ArticleSummaryDTO {
         this.citationCount = citationCount;
     }
 
-    public ArticleSummaryDTO() {
+    public ArticleSummaryResponse() {
     }
 
     // Getters

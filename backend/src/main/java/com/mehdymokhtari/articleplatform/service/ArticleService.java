@@ -1,8 +1,8 @@
 package com.mehdymokhtari.articleplatform.service;
 
-import com.mehdymokhtari.articleplatform.model.Article;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
 import com.mehdymokhtari.articleplatform.repository.ArticleRepository;
-import com.mehdymokhtari.articleplatform.dto.ArticleCreateDTO;
+import com.mehdymokhtari.articleplatform.dto.request.CreateArticleRequest;
 import com.mehdymokhtari.articleplatform.exception.DuplicateTitleException;
 import com.mehdymokhtari.articleplatform.exception.ArticleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class ArticleService {
     }
 
     // Create a new article
-    public Article createArticle(ArticleCreateDTO dto) {
+    public Article createArticle(CreateArticleRequest dto) {
         // Validate title uniqueness
         if (!isTitleUnique(dto.getTitle())) {
             throw new DuplicateTitleException("An article with title '" + dto.getTitle() + "' already exists");

@@ -1,8 +1,8 @@
 package com.mehdymokhtari.articleplatform.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mehdymokhtari.articleplatform.dto.ArticleCreateDTO;
-import com.mehdymokhtari.articleplatform.model.Article;
+import com.mehdymokhtari.articleplatform.dto.request.CreateArticleRequest;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
 import com.mehdymokhtari.articleplatform.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ class ArticleControllerIntegrationTest {
 
     @Test
     void createArticle_WithValidData_ShouldReturn201() throws Exception {
-        ArticleCreateDTO newArticle = new ArticleCreateDTO();
+        CreateArticleRequest newArticle = new CreateArticleRequest();
         newArticle.setTitle("Brand New Test Article");
         newArticle.setAbstractText("Test Abstract");
         newArticle.setBody("Test Body Content");
@@ -81,7 +81,7 @@ class ArticleControllerIntegrationTest {
 
     @Test
     void createArticle_WithDuplicateTitle_ShouldReturn409() throws Exception {
-        ArticleCreateDTO duplicateArticle = new ArticleCreateDTO();
+        CreateArticleRequest duplicateArticle = new CreateArticleRequest();
         duplicateArticle.setTitle("Integration Test Article");
         duplicateArticle.setAbstractText("Another Abstract");
         duplicateArticle.setBody("Another Body");

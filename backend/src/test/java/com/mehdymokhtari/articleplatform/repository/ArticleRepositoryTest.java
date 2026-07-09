@@ -1,6 +1,6 @@
 package com.mehdymokhtari.articleplatform.repository;
 
-import com.mehdymokhtari.articleplatform.model.Article;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

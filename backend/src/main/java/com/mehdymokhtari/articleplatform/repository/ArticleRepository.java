@@ -1,6 +1,6 @@
 package com.mehdymokhtari.articleplatform.repository;
 
-import com.mehdymokhtari.articleplatform.model.Article;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

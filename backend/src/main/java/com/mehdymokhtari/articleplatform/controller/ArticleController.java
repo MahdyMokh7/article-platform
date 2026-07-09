@@ -1,9 +1,9 @@
 package com.mehdymokhtari.articleplatform.controller;
 
-import com.mehdymokhtari.articleplatform.dto.ArticleCreateDTO;
-import com.mehdymokhtari.articleplatform.dto.ArticleDetailDTO;
-import com.mehdymokhtari.articleplatform.dto.ArticleSummaryDTO;
-import com.mehdymokhtari.articleplatform.model.Article;
+import com.mehdymokhtari.articleplatform.dto.request.CreateArticleRequest;
+import com.mehdymokhtari.articleplatform.dto.response.ArticleDetailResponse;
+import com.mehdymokhtari.articleplatform.dto.response.ArticleSummaryResponse;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
 import com.mehdymokhtari.articleplatform.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -21,10 +21,10 @@ public class ArticleController {
     private ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<List<ArticleSummaryDTO>> getAllArticles() {
+    public ResponseEntity<List<ArticleSummaryResponse>> getAllArticles() {
         List<Article> articles = articleService.getAllArticlesSortedByDate();
 
-        List<ArticleSummaryDTO> dtos = articles.stream()
+        List<ArticleSummaryResponse> dtos = articles.stream()
                 .map(this::convertToSummaryDTO)
                 .collect(Collectors.toList());
 
@@ -32,10 +32,10 @@ public class ArticleController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ArticleSummaryDTO>> searchArticles(@RequestParam String q) {
+    public ResponseEntity<List<ArticleSummaryResponse>> searchArticles(@RequestParam String q) {
         List<Article> articles = articleService.searchArticles(q);
 
-        List<ArticleSummaryDTO> dtos = articles.stream()
+        List<ArticleSummaryResponse> dtos = articles.stream()
                 .map(this::convertToSummaryDTO)
                 .collect(Collectors.toList());
 
@@ -43,16 +43,16 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleDetailDTO> getArticle(@PathVariable Long id) {
+    public ResponseEntity<ArticleDetailResponse> getArticle(@PathVariable Long id) {
         Article article = articleService.getArticleById(id);
-        ArticleDetailDTO dto = convertToDetailDTO(article);
+        ArticleDetailResponse dto = convertToDetailDTO(article);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<ArticleDetailDTO> createArticle(@Valid @RequestBody ArticleCreateDTO createDTO) {
+    public ResponseEntity<ArticleDetailResponse> createArticle(@Valid @RequestBody CreateArticleRequest createDTO) {
         Article savedArticle = articleService.createArticle(createDTO);
-        ArticleDetailDTO responseDTO = convertToDetailDTO(savedArticle);
+        ArticleDetailResponse responseDTO = convertToDetailDTO(savedArticle);
 
         URI location = URI.create("/api/articles/" + savedArticle.getId());
         return ResponseEntity.created(location).body(responseDTO);
@@ -67,10 +67,10 @@ public class ArticleController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<ArticleSummaryDTO>> getPopularArticles() {
+    public ResponseEntity<List<ArticleSummaryResponse>> getPopularArticles() {
         List<Article> articles = articleService.getArticlesSortedByCitationCount();
 
-        List<ArticleSummaryDTO> dtos = articles.stream()
+        List<ArticleSummaryResponse> dtos = articles.stream()
                 .map(this::convertToSummaryDTO)
                 .collect(Collectors.toList());
 
@@ -78,8 +78,8 @@ public class ArticleController {
     }
 
     // Helper Methods
-    private ArticleSummaryDTO convertToSummaryDTO(Article article) {
-        return new ArticleSummaryDTO(
+    private ArticleSummaryResponse convertToSummaryDTO(Article article) {
+        return new ArticleSummaryResponse(
                 article.getId(),
                 article.getTitle(),
                 article.getAbstractText(),
@@ -88,12 +88,12 @@ public class ArticleController {
         );
     }
 
-    private ArticleDetailDTO convertToDetailDTO(Article article) {
-        List<ArticleSummaryDTO> referenceDTOs = article.getReferences().stream()
+    private ArticleDetailResponse convertToDetailDTO(Article article) {
+        List<ArticleSummaryResponse> referenceDTOs = article.getReferences().stream()
                 .map(this::convertToSummaryDTO)
                 .collect(Collectors.toList());
 
-        return new ArticleDetailDTO(
+        return new ArticleDetailResponse(
                 article.getId(),
                 article.getTitle(),
                 article.getAbstractText(),

@@ -1,6 +1,9 @@
-package com.mehdymokhtari.articleplatform.model;
+package com.mehdymokhtari.articleplatform.model.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,10 +25,18 @@ public class Article {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
-    @Column(name = "publication_date")
+    @CreationTimestamp
+    @Column(name = "publication_date", updatable = false)
     private LocalDateTime publicationDate;
 
-    // Self-referential many-to-many for references (Bonus)
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
+
     @ManyToMany
     @JoinTable(
             name = "article_references",
@@ -37,14 +48,12 @@ public class Article {
     @ManyToMany(mappedBy = "references")
     private Set<Article> citedBy = new HashSet<>();
 
-    // Constructors
     public Article() {}
 
     public Article(String title, String abstractText, String body) {
         this.title = title;
         this.abstractText = abstractText;
         this.body = body;
-        this.publicationDate = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -62,6 +71,12 @@ public class Article {
 
     public LocalDateTime getPublicationDate() { return publicationDate; }
     public void setPublicationDate(LocalDateTime publicationDate) { this.publicationDate = publicationDate; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public User getAuthor() { return author; }
+    public void setAuthor(User author) { this.author = author; }
 
     public Set<Article> getReferences() { return references; }
     public void setReferences(Set<Article> references) { this.references = references; }

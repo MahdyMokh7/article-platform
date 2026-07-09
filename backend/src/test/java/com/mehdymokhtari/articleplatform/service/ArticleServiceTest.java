@@ -1,9 +1,9 @@
 package com.mehdymokhtari.articleplatform.service;
 
 import com.mehdymokhtari.articleplatform.exception.ArticleNotFoundException;
-import com.mehdymokhtari.articleplatform.dto.ArticleCreateDTO;
+import com.mehdymokhtari.articleplatform.dto.request.CreateArticleRequest;
 import com.mehdymokhtari.articleplatform.exception.DuplicateTitleException;
-import com.mehdymokhtari.articleplatform.model.Article;
+import com.mehdymokhtari.articleplatform.model.entity.Article;
 import com.mehdymokhtari.articleplatform.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class ArticleServiceTest {
     private ArticleService articleService;
 
     private Article testArticle;
-    private ArticleCreateDTO testCreateDTO;
+    private CreateArticleRequest testCreateDTO;
 
     @BeforeEach
     void setUp() {
@@ -40,7 +40,7 @@ class ArticleServiceTest {
         testArticle.setBody("Test Body");
         testArticle.setPublicationDate(LocalDateTime.now());
 
-        testCreateDTO = new ArticleCreateDTO();
+        testCreateDTO = new CreateArticleRequest();
         testCreateDTO.setTitle("New Article");
         testCreateDTO.setAbstractText("New Abstract");
         testCreateDTO.setBody("New Body");

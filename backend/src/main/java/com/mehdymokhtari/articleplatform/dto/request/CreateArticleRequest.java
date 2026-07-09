@@ -1,9 +1,9 @@
-package com.mehdymokhtari.articleplatform.dto;
+package com.mehdymokhtari.articleplatform.dto.request;
 
 import jakarta.validation.constraints.*;
 import java.util.List;
 
-public class ArticleCreateDTO {
+public class CreateArticleRequest {
 
     @NotBlank(message = "Title is required")
     @Size(max = 200, message = "Title cannot exceed 200 characters")
@@ -15,7 +15,6 @@ public class ArticleCreateDTO {
     @NotBlank(message = "Body is required")
     private String body;
 
-    // Bonus: References (IDs of articles this article cites)
     private List<Long> referenceIds;
 
     // Getters and Setters
