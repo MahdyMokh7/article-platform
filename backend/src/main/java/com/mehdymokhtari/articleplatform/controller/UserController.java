@@ -46,11 +46,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        return ResponseEntity.noContent().build();
-    }
-
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
