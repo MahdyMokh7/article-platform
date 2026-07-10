@@ -1,33 +1,35 @@
 /**
  * Home Page Component
- * 
+ *
  * Displays list of articles with search functionality.
  * Features:
  * - Shows articles sorted by publication date (newest first)
  * - Search with debouncing
  * - Title matches appear before abstract matches (backend handles this)
+ * - Conditional "Add Article" button (only when authenticated)
  * - Loading states with skeleton
  * - Error handling with retry option
  * - Empty states for no articles or no search results
- * - Infinite scroll preparation (future enhancement)
- * 
+ *
  * @component
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { getAllArticles, searchArticles } from '../services/api';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { getAllArticles, searchArticles } from '../services/articleApi';
 import ArticleCard from '../components/ArticleCard';
 import SearchBar from '../components/SearchBar';
 import styles from './HomePage.module.css';
 
 const HomePage = () => {
+  const { isAuthenticated } = useAuth();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
-  // Load all articles on mount
   useEffect(() => {
     loadArticles();
   }, []);
@@ -50,7 +52,7 @@ const HomePage = () => {
     setSearchTerm(term);
     setIsSearching(true);
     setError(null);
-    
+
     try {
       if (!term || term.trim() === '') {
         const data = await getAllArticles();
@@ -80,22 +82,39 @@ const HomePage = () => {
     }
   };
 
+  const handleEdit = (article) => {
+    navigate(`/edit/${article.id}`);
+  };
+
+  const handleDelete = (article) => {
+    // We'll handle delete from ArticleCard
+    // This is passed down to ArticleCard
+  };
+
   const isLoading = loading || isSearching;
   const hasNoArticles = !isLoading && articles.length === 0;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>
-          All Articles
-        </h1>
-        <p className={styles.subtitle}>
-          Discover the latest research and insights from our community
-        </p>
+        <div className={styles.headerContent}>
+          <div>
+            <h1 className={styles.title}>All Articles</h1>
+            <p className={styles.subtitle}>
+              Discover the latest research and insights from our community
+            </p>
+          </div>
+          {/* Conditional "Add Article" button - only shown when authenticated */}
+          {isAuthenticated && (
+            <Link to="/add" className={styles.addButton}>
+              ✍️ Write New Article
+            </Link>
+          )}
+        </div>
       </div>
 
-      <SearchBar 
-        onSearch={handleSearch} 
+      <SearchBar
+        onSearch={handleSearch}
         onClear={handleClearSearch}
         isLoading={isLoading}
         debounceMs={500}
@@ -127,17 +146,19 @@ const HomePage = () => {
             {searchTerm ? 'No matching articles found' : 'No articles yet'}
           </h3>
           <p className={styles.emptyMessage}>
-            {searchTerm 
+            {searchTerm
               ? `We couldn't find any articles matching "${searchTerm}". Try a different search term.`
               : 'Be the first to share your knowledge! Click "Add Article" to get started.'}
           </p>
-          {!searchTerm && (
-            <button 
-              onClick={() => window.location.href = '/add'} 
-              className={styles.emptyButton}
-            >
+          {!searchTerm && isAuthenticated && (
+            <Link to="/add" className={styles.emptyButton}>
               ✍️ Add Your First Article
-            </button>
+            </Link>
+          )}
+          {!searchTerm && !isAuthenticated && (
+            <Link to="/login" className={styles.emptyButton}>
+              🔑 Login to Write
+            </Link>
           )}
         </div>
       )}
@@ -161,7 +182,11 @@ const HomePage = () => {
             <div className={styles.articleRank}>
               {!searchTerm && index === 0 && <span className={styles.newestBadge}>Newest</span>}
             </div>
-            <ArticleCard article={article} animate={!loading} />
+            <ArticleCard
+              article={article}
+              animate={!loading}
+              onEdit={handleEdit}
+            />
           </div>
         ))}
       </div>
@@ -169,4 +194,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomePage;  

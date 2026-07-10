@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { validateLogin } from '../utils/validators';
 import styles from './LoginPage.module.css';
 
 const LoginPage = () => {
@@ -14,6 +15,7 @@ const LoginPage = () => {
     password: '',
   });
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [loading, setLoading] = useState(false);
 
   const from = location.state?.from?.pathname || '/';
@@ -26,12 +28,21 @@ const LoginPage = () => {
     }
   };
 
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    
+    // Validate on blur
+    const validationErrors = validateLogin(formData);
+    setErrors(prev => ({ ...prev, ...validationErrors }));
+  };
+
   const validate = () => {
-    const newErrors = {};
-    if (!formData.username.trim()) newErrors.username = 'Username is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const validationErrors = validateLogin(formData);
+    setErrors(validationErrors);
+    // Mark all fields as touched
+    setTouched({ username: true, password: true });
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
@@ -50,6 +61,10 @@ const LoginPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const showError = (field) => {
+    return errors[field] && touched[field];
   };
 
   return (
@@ -72,11 +87,12 @@ const LoginPage = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('username') ? styles.inputError : ''}`}
               placeholder="Enter your username"
               disabled={loading}
             />
-            {errors.username && <span className={styles.errorMessage}>{errors.username}</span>}
+            {showError('username') && <span className={styles.errorMessage}>{errors.username}</span>}
           </div>
 
           <div className={styles.formGroup}>
@@ -86,11 +102,12 @@ const LoginPage = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('password') ? styles.inputError : ''}`}
               placeholder="Enter your password"
               disabled={loading}
             />
-            {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
+            {showError('password') && <span className={styles.errorMessage}>{errors.password}</span>}
           </div>
 
           <button

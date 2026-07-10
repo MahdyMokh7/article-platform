@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import styles from './App.module.css';
+import EditArticlePage from './pages/EditArticlePage';
 
 function App() {
   return (
@@ -57,6 +58,14 @@ function App() {
               element={
                 <ProtectedRoute requireAuth={true}>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <EditArticlePage />
                 </ProtectedRoute>
               }
             />

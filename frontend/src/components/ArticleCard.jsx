@@ -7,24 +7,17 @@
  * - Truncated abstract with "Read more" link
  * - Formatted date display
  * - Citation count badge
+ * - Conditional Edit/Delete buttons (based on authentication + ownership)
  * - Smooth hover animations
- * - Accessibility support (keyboard navigation, ARIA labels)
- * - Skeleton loading state (prepared for future)
+ * - Accessibility support
  *
  * @component
- * @param {Object} props - Component props
- * @param {Object} props.article - Article object from backend
- * @param {number} props.article.id - Unique article identifier
- * @param {string} props.article.title - Article title
- * @param {string} props.article.abstractText - Article abstract (optional)
- * @param {string} props.article.publicationDate - ISO date string
- * @param {number} props.article.citationCount - Number of citations
- * @param {boolean} props.compact - Compact mode for sidebars (default: false)
- * @param {function} props.onClick - Optional click handler (for custom behavior)
  */
 
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useAuth } from '../context/AuthContext';
+import { isArticleAuthor } from '../utils/helpers';
 import styles from './ArticleCard.module.css';
 
 // ============================
@@ -32,21 +25,15 @@ import styles from './ArticleCard.module.css';
 // ============================
 const formatDate = (dateString) => {
   if (!dateString) return 'Date unknown';
-
   try {
     const date = new Date(dateString);
-
-    if (isNaN(date.getTime())) {
-      return 'Invalid date';
-    }
-
+    if (isNaN(date.getTime())) return 'Invalid date';
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     }).format(date);
-  } catch (error) {
-    console.warn('[ArticleCard] Date formatting failed:', error);
+  } catch {
     return 'Date unknown';
   }
 };
@@ -54,22 +41,18 @@ const formatDate = (dateString) => {
 const truncateText = (text, maxLength = 150) => {
   if (!text) return '';
   if (text.length <= maxLength) return text;
-
   const truncated = text.substring(0, maxLength);
   const lastSpaceIndex = truncated.lastIndexOf(' ');
-
   if (lastSpaceIndex > 0) {
     return truncated.substring(0, lastSpaceIndex) + '...';
   }
-
   return truncated + '...';
 };
 
 const getArticleAvatarColor = (id) => {
-  const hue = (id * 137.5) % 360; // Golden angle approximation for even distribution
+  const hue = (id * 137.5) % 360;
   return `hsl(${hue}, 70%, 55%)`;
 };
-
 
 // ============================
 // Main Component
@@ -79,8 +62,12 @@ const ArticleCard = ({
   compact = false,
   onClick,
   showAvatar = true,
-  animate = true
+  animate = true,
+  onEdit,
+  onDelete,
 }) => {
+  const { user, isAuthenticated } = useAuth();
+
   if (!article || !article.id) {
     console.warn('[ArticleCard] Missing article data');
     return null;
@@ -99,10 +86,19 @@ const ArticleCard = ({
   const hasAbstract = abstractText && abstractText.trim().length > 0;
   const avatarColor = getArticleAvatarColor(id);
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && onClick) {
-      onClick(article);
-    }
+  // Conditional rendering: Show Edit/Delete only if user is authenticated AND is the author
+  const canEdit = isAuthenticated && isArticleAuthor(article, user);
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onEdit) onEdit(article);
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) onDelete(article);
   };
 
   return (
@@ -113,7 +109,7 @@ const ArticleCard = ({
       {showAvatar && (
         <div className={styles.avatarSection}>
           <div className={styles.avatar} style={{ backgroundColor: avatarColor }} aria-label={`Article ${title}`}>
-            <span className={styles.avatarText}> {title.charAt(0).toUpperCase()} </span>
+            <span className={styles.avatarText}>{title.charAt(0).toUpperCase()}</span>
           </div>
           {citationCount > 0 && (
             <div className={styles.citationBadge} title={`Cited ${citationCount} times`}>
@@ -125,8 +121,8 @@ const ArticleCard = ({
       )}
 
       <div className={styles.content}>
-        < Link to={`/article/${id}`} className={styles.titleLink} onClick={onClick} >
-          <h3 className={styles.title}> {title} </h3>
+        <Link to={`/article/${id}`} className={styles.titleLink} onClick={onClick}>
+          <h3 className={styles.title}>{title}</h3>
         </Link>
 
         <div className={styles.meta}>
@@ -144,15 +140,37 @@ const ArticleCard = ({
         </div>
 
         {hasAbstract && (
-          <p className={styles.abstract}>
-            {truncatedAbstract}
-          </p>
+          <p className={styles.abstract}>{truncatedAbstract}</p>
         )}
 
-        <Link to={`/article/${id}`} className={styles.readMore} onClick={onClick}>
-          <span>Read full article</span>
-          <span className={styles.arrow} aria-hidden="true">→</span>
-        </Link>
+        <div className={styles.cardActions}>
+          <Link to={`/article/${id}`} className={styles.readMore} onClick={onClick}>
+            <span>Read full article</span>
+            <span className={styles.arrow} aria-hidden="true">→</span>
+          </Link>
+
+          {/* Conditional Edit/Delete buttons */}
+          {canEdit && (
+            <div className={styles.actionButtons}>
+              <button
+                onClick={handleEdit}
+                className={`${styles.actionButton} ${styles.editButton}`}
+                aria-label="Edit article"
+                title="Edit article"
+              >
+                ✏️ Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                className={`${styles.actionButton} ${styles.deleteButton}`}
+                aria-label="Delete article"
+                title="Delete article"
+              >
+                🗑️ Delete
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </article>
   );
@@ -168,11 +186,17 @@ ArticleCard.propTypes = {
     abstractText: PropTypes.string,
     publicationDate: PropTypes.string.isRequired,
     citationCount: PropTypes.number,
+    authorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    author: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    }),
   }).isRequired,
   compact: PropTypes.bool,
   onClick: PropTypes.func,
   showAvatar: PropTypes.bool,
   animate: PropTypes.bool,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 ArticleCard.defaultProps = {
@@ -180,7 +204,8 @@ ArticleCard.defaultProps = {
   showAvatar: true,
   animate: true,
   onClick: null,
-  citationCount: 0,
+  onEdit: null,
+  onDelete: null,
 };
 
 // ============================

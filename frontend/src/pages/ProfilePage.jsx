@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { validateProfile, validatePasswordChange } from '../utils/validators';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {
@@ -24,10 +25,14 @@ const ProfilePage = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfileForm(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -38,26 +43,44 @@ const ProfilePage = () => {
     }
   };
 
-  const validateProfile = () => {
-    const newErrors = {};
-    if (!profileForm.email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(profileForm.email)) newErrors.email = 'Invalid email format';
-    if (profileForm.phone && !/^\+?[0-9]{10,15}$/.test(profileForm.phone)) {
-      newErrors.phone = 'Invalid phone format';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleProfileBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const validationErrors = validateProfile(profileForm);
+    setErrors(prev => ({ ...prev, ...validationErrors }));
+  };
+
+  const handlePasswordBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const validationErrors = validatePasswordChange(passwordForm);
+    setErrors(prev => ({ ...prev, ...validationErrors }));
+  };
+
+  const validateProfileForm = () => {
+    const validationErrors = validateProfile(profileForm);
+    setErrors(validationErrors);
+    setTouched({ email: true, phone: true });
+    return Object.keys(validationErrors).length === 0;
+  };
+
+  const validatePasswordForm = () => {
+    const validationErrors = validatePasswordChange(passwordForm);
+    setErrors(validationErrors);
+    setTouched({ currentPassword: true, newPassword: true, confirmPassword: true });
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    if (!validateProfile()) return;
+    if (!validateProfileForm()) return;
 
     setLoading(true);
     try {
-      const result = await updateProfile(profileForm);
+      await updateProfile(profileForm);
       toast.success('Profile updated successfully!');
       setIsEditing(false);
+      setTouched({});
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
@@ -67,16 +90,7 @@ const ProfilePage = () => {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
-    if (passwordForm.newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
+    if (!validatePasswordForm()) return;
 
     setLoading(true);
     try {
@@ -87,6 +101,7 @@ const ProfilePage = () => {
       toast.success('Password changed successfully!');
       setIsChangingPassword(false);
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTouched({});
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to change password');
     } finally {
@@ -98,6 +113,10 @@ const ProfilePage = () => {
     logout();
     toast.success('Logged out successfully');
     navigate('/');
+  };
+
+  const showError = (field) => {
+    return errors[field] && touched[field];
   };
 
   if (!user) {
@@ -122,7 +141,11 @@ const ProfilePage = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Profile Information</h2>
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                setIsEditing(!isEditing);
+                setTouched({});
+                setErrors({});
+              }}
               className={styles.editButton}
             >
               {isEditing ? 'Cancel' : 'Edit Profile'}
@@ -138,10 +161,11 @@ const ProfilePage = () => {
                   name="email"
                   value={profileForm.email}
                   onChange={handleProfileChange}
-                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                  onBlur={handleProfileBlur}
+                  className={`${styles.input} ${showError('email') ? styles.inputError : ''}`}
                   disabled={loading}
                 />
-                {errors.email && <span className={styles.errorMessage}>{errors.email}</span>}
+                {showError('email') && <span className={styles.errorMessage}>{errors.email}</span>}
               </div>
 
               <div className={styles.formGroup}>
@@ -151,11 +175,12 @@ const ProfilePage = () => {
                   name="phone"
                   value={profileForm.phone}
                   onChange={handleProfileChange}
-                  className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
+                  onBlur={handleProfileBlur}
+                  className={`${styles.input} ${showError('phone') ? styles.inputError : ''}`}
                   disabled={loading}
                   placeholder="+989123456789"
                 />
-                {errors.phone && <span className={styles.errorMessage}>{errors.phone}</span>}
+                {showError('phone') && <span className={styles.errorMessage}>{errors.phone}</span>}
               </div>
 
               <button type="submit" className={styles.saveButton} disabled={loading}>
@@ -181,7 +206,11 @@ const ProfilePage = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Change Password</h2>
             <button
-              onClick={() => setIsChangingPassword(!isChangingPassword)}
+              onClick={() => {
+                setIsChangingPassword(!isChangingPassword);
+                setTouched({});
+                setErrors({});
+              }}
               className={styles.editButton}
             >
               {isChangingPassword ? 'Cancel' : 'Change Password'}
@@ -197,9 +226,11 @@ const ProfilePage = () => {
                   name="currentPassword"
                   value={passwordForm.currentPassword}
                   onChange={handlePasswordChange}
-                  className={styles.input}
+                  onBlur={handlePasswordBlur}
+                  className={`${styles.input} ${showError('currentPassword') ? styles.inputError : ''}`}
                   disabled={loading}
                 />
+                {showError('currentPassword') && <span className={styles.errorMessage}>{errors.currentPassword}</span>}
               </div>
 
               <div className={styles.formGroup}>
@@ -209,9 +240,11 @@ const ProfilePage = () => {
                   name="newPassword"
                   value={passwordForm.newPassword}
                   onChange={handlePasswordChange}
-                  className={styles.input}
+                  onBlur={handlePasswordBlur}
+                  className={`${styles.input} ${showError('newPassword') ? styles.inputError : ''}`}
                   disabled={loading}
                 />
+                {showError('newPassword') && <span className={styles.errorMessage}>{errors.newPassword}</span>}
               </div>
 
               <div className={styles.formGroup}>
@@ -221,9 +254,11 @@ const ProfilePage = () => {
                   name="confirmPassword"
                   value={passwordForm.confirmPassword}
                   onChange={handlePasswordChange}
-                  className={styles.input}
+                  onBlur={handlePasswordBlur}
+                  className={`${styles.input} ${showError('confirmPassword') ? styles.inputError : ''}`}
                   disabled={loading}
                 />
+                {showError('confirmPassword') && <span className={styles.errorMessage}>{errors.confirmPassword}</span>}
               </div>
 
               <button type="submit" className={styles.saveButton} disabled={loading}>

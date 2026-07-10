@@ -1,29 +1,36 @@
 /**
  * Article Page Component
- * 
+ *
  * Displays a single article with full content.
  * Features:
  * - Shows title, abstract, full body, publication date
  * - Displays citation count
  * - Shows referenced articles as clickable links (bonus)
+ * - Conditional Edit/Delete buttons (based on authentication + ownership)
  * - Loading skeleton
  * - Error handling for 404
  * - Back to home navigation
- * 
+ *
  * @component
  */
 
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getArticleById } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { getArticleById, deleteArticle } from '../services/articleApi';
+import { isArticleAuthor } from '../utils/helpers';
+import { toast } from 'react-toastify';
 import styles from './ArticlePage.module.css';
 
 const ArticlePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadArticle();
@@ -62,6 +69,32 @@ const ArticlePage = () => {
       return 'Date unknown';
     }
   };
+
+  const handleEdit = () => {
+    navigate(`/edit/${id}`);
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this article? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      await deleteArticle(id);
+      toast.success('Article deleted successfully!');
+      navigate('/');
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to delete article.';
+      toast.error(message);
+      console.error('[ArticlePage] Delete error:', error);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Conditional: Show Edit/Delete only if user is authenticated AND is the author
+  const canEdit = isAuthenticated && article && isArticleAuthor(article, user);
 
   if (loading) {
     return (
@@ -112,7 +145,7 @@ const ArticlePage = () => {
 
       <article className={styles.article}>
         <h1 className={styles.title}>{article.title}</h1>
-        
+
         <div className={styles.meta}>
           <div className={styles.metaItem}>
             <span className={styles.metaIcon}>📅</span>
@@ -125,6 +158,26 @@ const ArticlePage = () => {
             <span>Cited by <strong>{article.citationCount || 0}</strong></span>
           </div>
         </div>
+
+        {/* Conditional Edit/Delete buttons */}
+        {canEdit && (
+          <div className={styles.articleActions}>
+            <button
+              onClick={handleEdit}
+              className={styles.editButton}
+              disabled={deleting}
+            >
+              ✏️ Edit Article
+            </button>
+            <button
+              onClick={handleDelete}
+              className={styles.deleteButton}
+              disabled={deleting}
+            >
+              {deleting ? 'Deleting...' : '🗑️ Delete Article'}
+            </button>
+          </div>
+        )}
 
         {article.abstractText && (
           <div className={styles.abstractSection}>

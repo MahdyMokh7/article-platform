@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { validateRegistration } from '../utils/validators';
 import styles from './RegisterPage.module.css';
 
 const RegisterPage = () => {
@@ -16,6 +17,7 @@ const RegisterPage = () => {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [loading, setLoading] = useState(false);
 
   const passwordStrength = useMemo(() => {
@@ -48,32 +50,25 @@ const RegisterPage = () => {
     }
   };
 
-  const validate = () => {
-    const newErrors = {};
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
     
-    if (!formData.username.trim()) newErrors.username = 'Username is required';
-    else if (formData.username.length < 3) newErrors.username = 'Username must be at least 3 characters';
-    else if (formData.username.length > 50) newErrors.username = 'Username must be less than 50 characters';
+    // Validate on blur
+    const validationErrors = validateRegistration(formData);
+    setErrors(prev => ({ ...prev, ...validationErrors }));
+  };
 
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email format';
-
-    if (formData.phone && !/^\+?[0-9]{10,15}$/.test(formData.phone)) {
-      newErrors.phone = 'Invalid phone format (e.g., +989123456789)';
-    }
-
-    if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    else if (!/[a-z]/.test(formData.password)) newErrors.password = 'Must contain lowercase letter';
-    else if (!/[A-Z]/.test(formData.password)) newErrors.password = 'Must contain uppercase letter';
-    else if (!/\d/.test(formData.password)) newErrors.password = 'Must contain a number';
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const validate = () => {
+    const validationErrors = validateRegistration(formData);
+    setErrors(validationErrors);
+    // Mark all fields as touched
+    const allTouched = Object.keys(formData).reduce((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {});
+    setTouched(allTouched);
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
@@ -93,6 +88,10 @@ const RegisterPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const showError = (field) => {
+    return errors[field] && touched[field];
   };
 
   return (
@@ -115,11 +114,12 @@ const RegisterPage = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
-              placeholder="Choose a username"
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('username') ? styles.inputError : ''}`}
+              placeholder="Choose a username (3-50 characters)"
               disabled={loading}
             />
-            {errors.username && <span className={styles.errorMessage}>{errors.username}</span>}
+            {showError('username') && <span className={styles.errorMessage}>{errors.username}</span>}
           </div>
 
           <div className={styles.formGroup}>
@@ -129,11 +129,12 @@ const RegisterPage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('email') ? styles.inputError : ''}`}
               placeholder="your@email.com"
               disabled={loading}
             />
-            {errors.email && <span className={styles.errorMessage}>{errors.email}</span>}
+            {showError('email') && <span className={styles.errorMessage}>{errors.email}</span>}
           </div>
 
           <div className={styles.formGroup}>
@@ -143,11 +144,12 @@ const RegisterPage = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('phone') ? styles.inputError : ''}`}
               placeholder="+989123456789"
               disabled={loading}
             />
-            {errors.phone && <span className={styles.errorMessage}>{errors.phone}</span>}
+            {showError('phone') && <span className={styles.errorMessage}>{errors.phone}</span>}
           </div>
 
           <div className={styles.formGroup}>
@@ -157,7 +159,8 @@ const RegisterPage = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('password') ? styles.inputError : ''}`}
               placeholder="Create a strong password"
               disabled={loading}
             />
@@ -177,7 +180,7 @@ const RegisterPage = () => {
                 </span>
               </div>
             )}
-            {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
+            {showError('password') && <span className={styles.errorMessage}>{errors.password}</span>}
           </div>
 
           <div className={styles.formGroup}>
@@ -187,11 +190,12 @@ const RegisterPage = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
+              onBlur={handleBlur}
+              className={`${styles.input} ${showError('confirmPassword') ? styles.inputError : ''}`}
               placeholder="Confirm your password"
               disabled={loading}
             />
-            {errors.confirmPassword && <span className={styles.errorMessage}>{errors.confirmPassword}</span>}
+            {showError('confirmPassword') && <span className={styles.errorMessage}>{errors.confirmPassword}</span>}
           </div>
 
           <button
