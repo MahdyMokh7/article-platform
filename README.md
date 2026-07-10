@@ -198,6 +198,7 @@ npm run dev
 |--------|----------|-------------|
 | POST | `/api/auth/register` | Register a new user |
 | POST | `/api/auth/login` | Login and receive JWT token |
+| POST | `/api/auth/logout` | Logout from platform |
 
 ### Articles
 | Method | Endpoint | Description |
@@ -210,6 +211,8 @@ npm run dev
 | POST | `/api/articles` | Create a new article (auth required) |
 | PUT | `/api/articles/{id}` | Update an article (auth required) |
 | DELETE | `/api/articles/{id}` | Delete an article (auth required) |
+| GET | `/api/articles/{id}/references` | Get articles referenced by this article |
+| GET | `/api/articles/{id}/citations` | Get articles citing this article |
 
 ### Users
 | Method | Endpoint | Description |
@@ -218,11 +221,6 @@ npm run dev
 | PUT | `/api/users/profile` | Update user profile (auth required) |
 | PUT | `/api/users/password` | Change password (auth required) |
 
-### References
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/articles/{id}/references` | Get articles referenced by this article |
-| GET | `/api/articles/{id}/citations` | Get articles citing this article |
 
 > **Note:** All API endpoints are prefixed with `/api`. The server runs on `http://localhost:8080`.
 
