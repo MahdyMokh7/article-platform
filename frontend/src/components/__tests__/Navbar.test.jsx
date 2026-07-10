@@ -95,7 +95,7 @@ describe('Navbar Component', () => {
       renderWithAuth(<Navbar />);
 
       await waitFor(() => {
-        expect(screen.getAllByText(/log in/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/login/i).length).toBeGreaterThan(0);
         expect(screen.getAllByText(/sign up/i).length).toBeGreaterThan(0);
       });
     });

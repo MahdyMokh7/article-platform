@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer'; 
 import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
 import AddArticlePage from './pages/AddArticlePage';
@@ -71,6 +72,7 @@ function App() {
             />
           </Routes>
         </main>
+        <Footer />
         <ToastContainer
           position="top-right"
           autoClose={3000}

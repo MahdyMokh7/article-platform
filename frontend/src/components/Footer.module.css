@@ -1,0 +1,152 @@
+/**
+ * Footer Component Styles
+ */
+
+.footer {
+  margin-top: auto;
+  padding: 2rem 1.5rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: #fafafa;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+/* ============================
+   Author Section
+   ============================ */
+.authorSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatarWrapper {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4f46e5;
+  background-color: #e5e7eb;
+}
+
+.authorInfo {
+  text-align: left;
+}
+
+.authorName {
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.authorTitle {
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* ============================
+   Copyright
+   ============================ */
+.copyright {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.copyright p {
+  margin: 0;
+}
+
+.authorHighlight {
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+/* ============================
+   Social Links
+   ============================ */
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.socialLink:hover {
+  background-color: #e5e7eb;
+  color: #4f46e5;
+  transform: translateY(-2px);
+}
+
+/* ============================
+   Dark Mode Support
+   ============================ */
+@media (prefers-color-scheme: dark) {
+  .footer {
+    background-color: #1a1a2e;
+    border-top-color: #2d2d3d;
+  }
+
+  .authorName {
+    color: #e0e0e0;
+  }
+
+  .copyright {
+    color: #a0a0a0;
+  }
+
+  .socialLink:hover {
+    background-color: #2d2d3d;
+    color: #4ecdc4;
+  }
+
+  .avatar {
+    border-color: #4ecdc4;
+  }
+}
+
+/* ============================
+   Responsive
+   ============================ */
+@media (max-width: 480px) {
+  .footer {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .authorSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .authorInfo {
+    text-align: center;
+  }
+}
