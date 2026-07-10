@@ -246,3 +246,13 @@ surefire-reports/
 **/surefire-reports/
 failsafe-reports/
 **/failsafe-reports/
+
+
+
+
+
+###################### more
+# Test scripts (not needed for production)
+*.bat
+*.http
+*.ps1
