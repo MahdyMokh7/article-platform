@@ -1,160 +1,224 @@
+/**
+ * HomePage Component Styles
+ *
+ * Styles for the homepage with article list, search, and responsive design
+ */
+
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 1.5rem;
 }
 
+/* ============================
+   Header
+   ============================ */
 .header {
-  text-align: center;
   margin-bottom: 2rem;
 }
 
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
 .title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
 }
 
 .titleIcon {
-  font-size: 2rem;
+  font-size: 1.75rem;
 }
 
 .subtitle {
-  color: #666;
-  font-size: 1rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
 }
 
-.errorContainer {
-  background: linear-gradient(135deg, #fdecea 0%, #fef3f2 100%);
-  border-left: 4px solid #e74c3c;
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff;
+  padding: 0.625rem 1.25rem;
   border-radius: 8px;
-  padding: 1.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+/* ============================
+   Error State
+   ============================ */
+.errorContainer {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
   text-align: center;
 }
 
 .errorIcon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
 }
 
 .errorMessage {
-  color: #c0392b;
-  margin-bottom: 1rem;
+  color: #dc2626;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
 }
 
 .retryButton {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #ef4444;
+  color: #ffffff;
   border: none;
   padding: 0.5rem 1.5rem;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.875rem;
   transition: all 0.2s;
 }
 
 .retryButton:hover {
-  background-color: #c0392b;
-  transform: translateY(-1px);
+  background-color: #dc2626;
 }
 
+/* ============================
+   Loading State
+   ============================ */
 .loadingContainer {
   text-align: center;
-  padding: 3rem;
+  padding: 3rem 1rem;
 }
 
 .loadingSpinner {
   width: 48px;
   height: 48px;
-  border: 3px solid #e0e0e0;
-  border-top-color: #3498db;
+  border: 3px solid #e5e7eb;
+  border-top-color: #4f46e5;
   border-radius: 50%;
   margin: 0 auto 1rem;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingText {
-  color: #666;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
 }
 
+/* ============================
+   Empty State
+   ============================ */
 .emptyContainer {
   text-align: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background: #f9fafb;
   border-radius: 12px;
   margin: 1.5rem 0;
+  border: 1px dashed #d1d5db;
 }
 
 .emptyIcon {
   font-size: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .emptyTitle {
-  font-size: 1.5rem;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
 }
 
 .emptyMessage {
-  color: #666;
-  margin-bottom: 1.5rem;
+  color: #6b7280;
+  margin: 0 0 1.25rem 0;
+  font-size: 0.95rem;
 }
 
 .emptyButton {
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff;
+  padding: 0.625rem 1.5rem;
   border-radius: 8px;
-  cursor: pointer;
+  text-decoration: none;
   font-weight: 500;
+  font-size: 0.875rem;
   transition: all 0.2s;
 }
 
 .emptyButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
 }
 
+/* ============================
+   Results Info
+   ============================ */
 .resultsInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem 0 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #eee;
+  margin: 1.25rem 0 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
 }
 
 .resultsCount {
-  color: #666;
+  color: #6b7280;
   font-size: 0.875rem;
 }
 
 .clearSearchLink {
   background: none;
   border: none;
-  color: #3498db;
+  color: #4f46e5;
   cursor: pointer;
   font-size: 0.875rem;
+  font-weight: 500;
   transition: color 0.2s;
 }
 
 .clearSearchLink:hover {
-  color: #2980b9;
+  color: #4338ca;
   text-decoration: underline;
 }
 
+/* ============================
+   Articles List
+   ============================ */
 .articlesList {
   display: flex;
   flex-direction: column;
@@ -172,25 +236,66 @@
 }
 
 .newestBadge {
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
-  color: white;
-  font-size: 0.7rem;
-  padding: 2px 8px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  font-size: 0.65rem;
+  padding: 2px 10px;
   border-radius: 12px;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
 }
 
+/* ============================
+   Responsive Design
+   ============================ */
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 1rem 1rem;
   }
-  
+
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
-  
+
+  .addButton {
+    justify-content: center;
+    width: 100%;
+  }
+
   .articleRank {
     display: none;
+  }
+
+  .emptyContainer {
+    padding: 2rem 1rem;
+  }
+
+  .emptyIcon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .resultsInfo {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
   }
 }

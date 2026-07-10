@@ -1,6 +1,6 @@
 /**
  * Popular Page Component - BONUS FEATURE
- * 
+ *
  * Displays articles sorted by citation count (most cited first).
  * Features:
  * - Ranked list with position numbers
@@ -8,13 +8,13 @@
  * - Citation count display
  * - Link to each article
  * - Loading and empty states
- * 
+ *
  * @component
  */
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getPopularArticles } from '../services/api';
+import { getPopularArticles } from '../services/articleApi';
 import ArticleCard from '../components/ArticleCard';
 import styles from './PopularPage.module.css';
 
@@ -43,19 +43,27 @@ const PopularPage = () => {
 
   const getRankIcon = (index) => {
     switch (index) {
-      case 0: return '🥇';
-      case 1: return '🥈';
-      case 2: return '🥉';
-      default: return null;
+      case 0:
+        return '🥇';
+      case 1:
+        return '🥈';
+      case 2:
+        return '🥉';
+      default:
+        return null;
     }
   };
 
   const getRankClass = (index) => {
     switch (index) {
-      case 0: return styles.rankGold;
-      case 1: return styles.rankSilver;
-      case 2: return styles.rankBronze;
-      default: return styles.rankDefault;
+      case 0:
+        return styles.rankGold;
+      case 1:
+        return styles.rankSilver;
+      case 2:
+        return styles.rankBronze;
+      default:
+        return styles.rankDefault;
     }
   };
 
@@ -77,7 +85,11 @@ const PopularPage = () => {
           <div className={styles.errorIcon}>⚠️</div>
           <h2 className={styles.errorTitle}>Unable to Load Rankings</h2>
           <p className={styles.errorMessage}>{error}</p>
-          <button onClick={loadPopularArticles} className={styles.retryButton}>
+          <button
+            type="button"
+            onClick={loadPopularArticles}
+            className={styles.retryButton}
+          >
             Try Again
           </button>
         </div>
@@ -138,7 +150,11 @@ const PopularPage = () => {
               {getRankIcon(index) || <span className={styles.rankText}>{index + 1}</span>}
             </div>
             <div className={styles.rankContent}>
-              <ArticleCard article={article} compact={true} showAvatar={false} />
+              <ArticleCard
+                article={article}
+                compact={true}
+                showAvatar={false}
+              />
             </div>
             <div className={styles.citationCount}>
               <span className={styles.citationIcon}>📖</span>

@@ -86,7 +86,6 @@ describe('ArticlePage', () => {
 
       renderWithAuth(<ArticlePage />);
 
-      // The skeleton has no text, so check for the container element
       const skeleton = document.querySelector('[class*="skeleton"]');
       expect(skeleton).toBeInTheDocument();
     });

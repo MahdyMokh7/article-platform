@@ -76,8 +76,8 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(/Write your article content/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Full Text/i)).toBeInTheDocument();
         expect(screen.getByText(/Publish Article/i)).toBeInTheDocument();
       });
     });
@@ -86,7 +86,7 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/A brief summary of your article/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Abstract/i)).toBeInTheDocument();
       });
     });
 
@@ -108,10 +108,10 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
       });
 
-      const titleInput = screen.getByPlaceholderText(/Enter a compelling title/i);
+      const titleInput = screen.getByLabelText(/Title/i);
       await userEvent.type(titleInput, 'Unique Title');
       await userEvent.tab();
 
@@ -126,10 +126,10 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
       });
 
-      const titleInput = screen.getByPlaceholderText(/Enter a compelling title/i);
+      const titleInput = screen.getByLabelText(/Title/i);
       await userEvent.type(titleInput, 'Existing Title');
       await userEvent.tab();
 
@@ -148,11 +148,11 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
       });
 
-      const titleInput = screen.getByPlaceholderText(/Enter a compelling title/i);
-      const bodyInput = screen.getByPlaceholderText(/Write your article content/i);
+      const titleInput = screen.getByLabelText(/Title/i);
+      const bodyInput = screen.getByLabelText(/Full Text/i);
 
       await userEvent.type(titleInput, 'New Article');
       await userEvent.type(bodyInput, 'Body content');
@@ -178,12 +178,12 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
       });
 
-      const titleInput = screen.getByPlaceholderText(/Enter a compelling title/i);
-      const abstractInput = screen.getByPlaceholderText(/A brief summary of your article/i);
-      const bodyInput = screen.getByPlaceholderText(/Write your article content/i);
+      const titleInput = screen.getByLabelText(/Title/i);
+      const abstractInput = screen.getByLabelText(/Abstract/i);
+      const bodyInput = screen.getByLabelText(/Full Text/i);
 
       await userEvent.type(titleInput, 'New Article');
       await userEvent.type(abstractInput, 'Test Abstract');
@@ -210,11 +210,11 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
       });
 
-      const titleInput = screen.getByPlaceholderText(/Enter a compelling title/i);
-      const bodyInput = screen.getByPlaceholderText(/Write your article content/i);
+      const titleInput = screen.getByLabelText(/Title/i);
+      const bodyInput = screen.getByLabelText(/Full Text/i);
 
       await userEvent.type(titleInput, 'Duplicate Title');
       await userEvent.type(bodyInput, 'Body content');
@@ -246,11 +246,11 @@ describe('AddArticlePage', () => {
       renderWithAuth(<AddArticlePage />);
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Enter a compelling title/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
       });
 
-      const titleInput = screen.getByPlaceholderText(/Enter a compelling title/i);
-      const bodyInput = screen.getByPlaceholderText(/Write your article content/i);
+      const titleInput = screen.getByLabelText(/Title/i);
+      const bodyInput = screen.getByLabelText(/Full Text/i);
 
       await userEvent.type(titleInput, 'Valid Title');
       await userEvent.type(bodyInput, 'Valid body content');
@@ -297,11 +297,71 @@ describe('AddArticlePage', () => {
       });
 
       const checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes.length).toBeGreaterThan(0);
+
+      // Click first checkbox
       await userEvent.click(checkboxes[0]);
-      await userEvent.click(checkboxes[1]);
 
       await waitFor(() => {
-        expect(screen.getByText(/Selected 2 references/)).toBeInTheDocument();
+        expect(screen.getByText(/Selected 1 reference/)).toBeInTheDocument();
+      });
+    });
+
+    it('should show select all button when more than 5 articles', async () => {
+      const manyArticles = Array.from({ length: 6 }, (_, i) => ({
+        id: i + 1,
+        title: `Article ${i + 1}`,
+        citationCount: 0,
+      }));
+      articleApi.getAllArticles.mockResolvedValue(manyArticles);
+
+      renderWithAuth(<AddArticlePage />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Select All/)).toBeInTheDocument();
+        expect(screen.getByText(/Clear All/)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Authentication', () => {
+    it('should redirect to login when not authenticated', async () => {
+      authApi.getCurrentUser.mockRejectedValue(new Error('Not authenticated'));
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('authUser');
+
+      renderWithAuth(<AddArticlePage />);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith('/login');
+      });
+    });
+  });
+
+  describe('Loading state', () => {
+    it('should show loading state during submission', async () => {
+      articleApi.createArticle.mockImplementation(
+        () => new Promise(resolve => setTimeout(() => resolve({ id: 1, title: 'Test' }), 100))
+      );
+      articleApi.checkTitleAvailability.mockResolvedValue(true);
+
+      renderWithAuth(<AddArticlePage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
+      });
+
+      const titleInput = screen.getByLabelText(/Title/i);
+      const bodyInput = screen.getByLabelText(/Full Text/i);
+
+      await userEvent.type(titleInput, 'Test Article');
+      await userEvent.type(bodyInput, 'Body content');
+
+      const submitButton = screen.getByText(/Publish Article/i);
+      await userEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Publishing.../)).toBeInTheDocument();
       });
     });
   });

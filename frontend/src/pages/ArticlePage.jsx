@@ -44,10 +44,10 @@ const ArticlePage = () => {
       const data = await getArticleById(id);
       setArticle(data);
     } catch (err) {
-      const isNotFound = err.response?.status === 404 || 
-                        err.message?.includes('404') || 
+      const isNotFound = err.response?.status === 404 ||
+                        err.message?.includes('404') ||
                         err.message?.includes('not found');
-      
+
       if (isNotFound) {
         setError('Article not found');
       } else {
@@ -76,14 +76,12 @@ const ArticlePage = () => {
   };
 
   const handleEdit = () => {
-    // Check if user is authenticated
     if (!isAuthenticated) {
       toast.error('Please login to edit this article');
       navigate('/login');
       return;
     }
 
-    // Check if user is the author
     if (!isArticleAuthor(article, user)) {
       toast.error("You don't have permission to edit this article");
       return;
@@ -93,14 +91,12 @@ const ArticlePage = () => {
   };
 
   const handleDelete = async () => {
-    // Check if user is authenticated
     if (!isAuthenticated) {
       toast.error('Please login to delete this article');
       navigate('/login');
       return;
     }
 
-    // Check if user is the author
     if (!isArticleAuthor(article, user)) {
       toast.error("You don't have permission to delete this article");
       return;
@@ -118,7 +114,7 @@ const ArticlePage = () => {
     } catch (error) {
       const status = error.response?.status;
       const message = error.response?.data?.message || 'Failed to delete article.';
-      
+
       if (status === 401) {
         toast.error('Please login to delete this article');
       } else if (status === 403) {
@@ -132,7 +128,6 @@ const ArticlePage = () => {
     }
   };
 
-  // Conditional: Show Edit/Delete only if user is authenticated AND is the author
   const canEdit = isAuthenticated && article && isArticleAuthor(article, user);
 
   if (loading) {
@@ -161,7 +156,11 @@ const ArticlePage = () => {
             <Link to="/" className={styles.homeButton}>
               ← Back to Home
             </Link>
-            <button onClick={() => navigate(-1)} className={styles.backButton}>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className={styles.backButton}
+            >
               Go Back
             </button>
           </div>
@@ -194,14 +193,16 @@ const ArticlePage = () => {
           </div>
           <div className={styles.metaItem}>
             <span className={styles.metaIcon}>📖</span>
-            <span>Cited by <strong>{article.citationCount || 0}</strong></span>
+            <span>
+              Cited by <strong>{article.citationCount || 0}</strong>
+            </span>
           </div>
         </div>
 
-        {/* Conditional Edit/Delete buttons */}
         {canEdit && (
           <div className={styles.articleActions}>
             <button
+              type="button"
               onClick={handleEdit}
               className={styles.editButton}
               disabled={deleting}
@@ -209,6 +210,7 @@ const ArticlePage = () => {
               ✏️ Edit Article
             </button>
             <button
+              type="button"
               onClick={handleDelete}
               className={styles.deleteButton}
               disabled={deleting}

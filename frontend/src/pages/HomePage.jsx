@@ -15,7 +15,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getAllArticles, searchArticles } from '../services/articleApi';
 import ArticleCard from '../components/ArticleCard';
@@ -23,6 +23,7 @@ import SearchBar from '../components/SearchBar';
 import styles from './HomePage.module.css';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,11 +87,6 @@ const HomePage = () => {
     navigate(`/edit/${article.id}`);
   };
 
-  const handleDelete = (article) => {
-    // We'll handle delete from ArticleCard
-    // This is passed down to ArticleCard
-  };
-
   const isLoading = loading || isSearching;
   const hasNoArticles = !isLoading && articles.length === 0;
 
@@ -99,12 +95,14 @@ const HomePage = () => {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div>
-            <h1 className={styles.title}>All Articles</h1>
+            <h1 className={styles.title}>
+              <span className={styles.titleIcon}>📚</span>
+              All Articles
+            </h1>
             <p className={styles.subtitle}>
               Discover the latest research and insights from our community
             </p>
           </div>
-          {/* Conditional "Add Article" button - only shown when authenticated */}
           {isAuthenticated && (
             <Link to="/add" className={styles.addButton}>
               ✍️ Write New Article
@@ -124,7 +122,11 @@ const HomePage = () => {
         <div className={styles.errorContainer}>
           <div className={styles.errorIcon}>⚠️</div>
           <p className={styles.errorMessage}>{error}</p>
-          <button onClick={handleRetry} className={styles.retryButton}>
+          <button
+            type="button"
+            onClick={handleRetry}
+            className={styles.retryButton}
+          >
             Try Again
           </button>
         </div>
@@ -166,10 +168,16 @@ const HomePage = () => {
       {!isLoading && articles.length > 0 && (
         <div className={styles.resultsInfo}>
           <span className={styles.resultsCount}>
-            {searchTerm ? `Found ${articles.length} result${articles.length !== 1 ? 's' : ''}` : `${articles.length} article${articles.length !== 1 ? 's' : ''}`}
+            {searchTerm
+              ? `Found ${articles.length} result${articles.length !== 1 ? 's' : ''}`
+              : `${articles.length} article${articles.length !== 1 ? 's' : ''}`}
           </span>
           {searchTerm && (
-            <button onClick={handleClearSearch} className={styles.clearSearchLink}>
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className={styles.clearSearchLink}
+            >
               Clear search
             </button>
           )}
@@ -180,7 +188,9 @@ const HomePage = () => {
         {articles.map((article, index) => (
           <div key={article.id} className={styles.articleItem}>
             <div className={styles.articleRank}>
-              {!searchTerm && index === 0 && <span className={styles.newestBadge}>Newest</span>}
+              {!searchTerm && index === 0 && (
+                <span className={styles.newestBadge}>Newest</span>
+              )}
             </div>
             <ArticleCard
               article={article}
@@ -194,4 +204,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;  
+export default HomePage;
