@@ -102,22 +102,24 @@ article-platform/
 │   │   └── test/
 │   ├── pom.xml                   # Maven dependencies
 │   ├── Dockerfile                # Backend container build
-│   ├── test-api.http             # HTTP client test file (IntelliJ)
-│   └── test-api.bat              # Windows API test script
 ├── frontend/                    # React SPA
 │   ├── src/
 │   │   ├── components/          # Reusable UI components
 │   │   ├── pages/               # Page components
 │   │   ├── services/            # API service layer (Axios)
+│   |   ├── context/
+│   |   ├── hooks/
+│   |   ├── utils/
 │   │   ├── test/                # Test setup and utilities
 │   │   ├── App.jsx              # Root component with routing
 │   │   ├── App.module.css       # Root component styles
 │   │   ├── main.jsx             # Application entry point
 │   │   └── index.css            # Global styles
 │   ├── public/                  # Static assets
-│   ├── .env                     # Environment variables
+│   ├── eslint.config.js         # Linting rules and code style config
 │   ├── index.html               # HTML template
 │   ├── package.json             # NPM dependencies
+│   ├── package-lock.json        # Locked dependency versions for reproducible installs
 │   ├── vite.config.js           # Vite configuration with Vitest
 │   └── Dockerfile
 ├── docker-compose.yaml          # Multi-container orchestration
