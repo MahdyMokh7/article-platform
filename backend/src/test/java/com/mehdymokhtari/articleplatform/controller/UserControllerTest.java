@@ -6,6 +6,7 @@ import com.mehdymokhtari.articleplatform.dto.request.UpdateProfileRequest;
 import com.mehdymokhtari.articleplatform.dto.response.ProfileResponse;
 import com.mehdymokhtari.articleplatform.model.entity.User;
 import com.mehdymokhtari.articleplatform.model.enums.Role;
+import com.mehdymokhtari.articleplatform.security.JwtServiceImpl;
 import com.mehdymokhtari.articleplatform.service.AuthService;
 import com.mehdymokhtari.articleplatform.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@Import(JwtServiceImpl.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 

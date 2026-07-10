@@ -7,12 +7,14 @@ import com.mehdymokhtari.articleplatform.dto.response.LoginResponse;
 import com.mehdymokhtari.articleplatform.dto.response.ProfileResponse;
 import com.mehdymokhtari.articleplatform.model.entity.User;
 import com.mehdymokhtari.articleplatform.model.enums.Role;
+import com.mehdymokhtari.articleplatform.security.JwtServiceImpl;
 import com.mehdymokhtari.articleplatform.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthController.class)
+@Import(JwtServiceImpl.class)
 @AutoConfigureMockMvc(addFilters = false)  // Disable security filters for controller tests
 class AuthControllerTest {
 
