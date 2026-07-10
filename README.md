@@ -107,21 +107,21 @@ article-platform/
 │   │   ├── components/          # Reusable UI components
 │   │   ├── pages/               # Page components
 │   │   ├── services/            # API service layer (Axios)
-│   |   ├── context/
-│   |   ├── hooks/
-│   |   ├── utils/
+│   │   ├── context/             # React Context providers
+│   │   ├── hooks/               # Custom React hooks
+│   │   ├── utils/               # Utility functions
 │   │   ├── test/                # Test setup and utilities
 │   │   ├── App.jsx              # Root component with routing
 │   │   ├── App.module.css       # Root component styles
 │   │   ├── main.jsx             # Application entry point
 │   │   └── index.css            # Global styles
 │   ├── public/                  # Static assets
-│   ├── eslint.config.js         # Linting rules and code style config
+│   ├── .env                     # Environment variables
+│   ├── eslint.config.js         # Linting rules
 │   ├── index.html               # HTML template
 │   ├── package.json             # NPM dependencies
-│   ├── package-lock.json        # Locked dependency versions for reproducible installs
-│   ├── vite.config.js           # Vite configuration with Vitest
-│   └── Dockerfile
+│   ├── vite.config.js           # Vite configuration
+│   └── Dockerfile               # Frontend container build
 ├── docker-compose.yaml          # Multi-container orchestration
 ├── docs/                        # Project documentation
 │   ├── api/                     # API specifications
@@ -174,22 +174,27 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-#### Frontend
+### Frontend
 ```bash
 cd frontend
-npm install
-npm run dev
+npm test                # Run tests with Vitest
+npm run test:ui         # Run tests with UI interface
+npm run test:run        # Run tests once
+npm run coverage        # Run tests with coverage report
+npm run lint            # Run ESLint for code quality
 ```
 
 ---
 
 ## 🔐 Authentication Flow
 
-1. **Registration** – Users create accounts with username, email, and password
-2. **Login** – Authenticated users receive a JWT token
-3. **Authorization** – Token must be included in `Authorization: Bearer <token>` header
+1. **Registration** – Users create accounts with username, email, and password with real-time validation
+2. **Login** – Authenticated users receive a JWT token stored in localStorage
+3. **Authorization** – Token automatically injected into all API requests via Axios interceptors
 4. **Security** – Passwords are hashed with BCrypt; tokens expire after a configurable time
 5. **Protected Routes** – Frontend guards routes based on authentication status
+6. **User Feedback** – Toast notifications for all authentication actions (success/error)
+7. **Session Management** – Automatic logout on 401 Unauthorized responses
 
 ---
 
@@ -325,6 +330,3 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 - 📧 Email: mh.mokhtari7@gmail.com
 - 🐙 GitHub: [@MahdyMokh7](https://github.com/MahdyMokh7)
 - 🔗 LinkedIn: [Mehdy Mokhtari](https://linkedin.com/in/mehdymokhtari)
-
-
-backend done
