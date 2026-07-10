@@ -247,6 +247,47 @@
 }
 
 /* ============================
+   Authentication Buttons (Desktop)
+   ============================ */
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loginLink {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.loginLink:hover {
+  background-color: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+}
+
+.registerLink {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.registerLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+/* ============================
    Mobile Menu Button (Hamburger)
    ============================ */
 
@@ -354,6 +395,50 @@
   opacity: 0;
   transform: translateX(20px);
   animation: slideIn 0.3s forwards;
+}
+
+/* Mobile Auth Links */
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.mobileNavLink:hover {
+  background-color: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+}
+
+.mobileRegisterLink {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff;
+  justify-content: center;
+}
+
+.mobileRegisterLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+}
+
+.mobileLogoutButton {
+  color: #ef4444;
+}
+
+.mobileLogoutButton:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
 }
 
 @keyframes slideIn {
@@ -504,3 +589,4 @@
     transition: none;
   }
 }
+

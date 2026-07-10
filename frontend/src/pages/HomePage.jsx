@@ -95,10 +95,7 @@ const HomePage = () => {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div>
-            <h1 className={styles.title}>
-              <span className={styles.titleIcon}>📚</span>
-              All Articles
-            </h1>
+            <h1 className={styles.title}>All Articles</h1>
             <p className={styles.subtitle}>
               Discover the latest research and insights from our community
             </p>

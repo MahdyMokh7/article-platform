@@ -363,7 +363,7 @@ const Navbar = () => {
             ) : (
               <div className={styles.authButtons}>
                 <NavLink to="/login" className={styles.loginLink}>
-                  Log In
+                  Login
                 </NavLink>
                 <NavLink to="/register" className={styles.registerLink}>
                   Sign Up
@@ -451,7 +451,7 @@ const Navbar = () => {
                       className={styles.mobileNavLink}
                       onClick={closeMobileMenu}
                     >
-                      Log In
+                      Login
                     </NavLink>
                   </li>
                   <li className={styles.mobileNavItem}>
