@@ -32,7 +32,6 @@ const LoginPage = () => {
     const { name } = e.target;
     setTouched(prev => ({ ...prev, [name]: true }));
     
-    // Validate on blur
     const validationErrors = validateLogin(formData);
     setErrors(prev => ({ ...prev, ...validationErrors }));
   };
@@ -40,7 +39,6 @@ const LoginPage = () => {
   const validate = () => {
     const validationErrors = validateLogin(formData);
     setErrors(validationErrors);
-    // Mark all fields as touched
     setTouched({ username: true, password: true });
     return Object.keys(validationErrors).length === 0;
   };
@@ -81,9 +79,10 @@ const LoginPage = () => {
           )}
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Username</label>
+            <label className={styles.label} htmlFor="username">Username</label>
             <input
               type="text"
+              id="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
@@ -96,9 +95,10 @@ const LoginPage = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Password</label>
+            <label className={styles.label} htmlFor="password">Password</label>
             <input
               type="password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}

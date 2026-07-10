@@ -155,9 +155,10 @@ const ProfilePage = () => {
           {isEditing ? (
             <form onSubmit={handleProfileSubmit} className={styles.editForm}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>Email</label>
+                <label className={styles.label} htmlFor="profileEmail">Email</label>
                 <input
                   type="email"
+                  id="profileEmail"
                   name="email"
                   value={profileForm.email}
                   onChange={handleProfileChange}
@@ -169,9 +170,10 @@ const ProfilePage = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>Phone</label>
+                <label className={styles.label} htmlFor="profilePhone">Phone</label>
                 <input
                   type="tel"
+                  id="profilePhone"
                   name="phone"
                   value={profileForm.phone}
                   onChange={handleProfileChange}
@@ -220,9 +222,10 @@ const ProfilePage = () => {
           {isChangingPassword && (
             <form onSubmit={handlePasswordSubmit} className={styles.editForm}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>Current Password</label>
+                <label className={styles.label} htmlFor="currentPassword">Current Password</label>
                 <input
                   type="password"
+                  id="currentPassword"
                   name="currentPassword"
                   value={passwordForm.currentPassword}
                   onChange={handlePasswordChange}
@@ -234,9 +237,10 @@ const ProfilePage = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>New Password</label>
+                <label className={styles.label} htmlFor="newPassword">New Password</label>
                 <input
                   type="password"
+                  id="newPassword"
                   name="newPassword"
                   value={passwordForm.newPassword}
                   onChange={handlePasswordChange}
@@ -248,9 +252,10 @@ const ProfilePage = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>Confirm Password</label>
+                <label className={styles.label} htmlFor="confirmPassword">Confirm Password</label>
                 <input
                   type="password"
+                  id="confirmPassword"
                   name="confirmPassword"
                   value={passwordForm.confirmPassword}
                   onChange={handlePasswordChange}

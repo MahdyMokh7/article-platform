@@ -7,6 +7,7 @@
  * - Displays citation count
  * - Shows referenced articles as clickable links (bonus)
  * - Conditional Edit/Delete buttons (based on authentication + ownership)
+ * - Toast notifications for success/error/permission
  * - Loading skeleton
  * - Error handling for 404
  * - Back to home navigation
@@ -43,7 +44,11 @@ const ArticlePage = () => {
       const data = await getArticleById(id);
       setArticle(data);
     } catch (err) {
-      if (err.message?.includes('404') || err.message?.includes('not found')) {
+      const isNotFound = err.response?.status === 404 || 
+                        err.message?.includes('404') || 
+                        err.message?.includes('not found');
+      
+      if (isNotFound) {
         setError('Article not found');
       } else {
         setError('Failed to load article. Please try again.');
@@ -71,10 +76,36 @@ const ArticlePage = () => {
   };
 
   const handleEdit = () => {
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      toast.error('Please login to edit this article');
+      navigate('/login');
+      return;
+    }
+
+    // Check if user is the author
+    if (!isArticleAuthor(article, user)) {
+      toast.error("You don't have permission to edit this article");
+      return;
+    }
+
     navigate(`/edit/${id}`);
   };
 
   const handleDelete = async () => {
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      toast.error('Please login to delete this article');
+      navigate('/login');
+      return;
+    }
+
+    // Check if user is the author
+    if (!isArticleAuthor(article, user)) {
+      toast.error("You don't have permission to delete this article");
+      return;
+    }
+
     if (!window.confirm('Are you sure you want to delete this article? This action cannot be undone.')) {
       return;
     }
@@ -82,11 +113,19 @@ const ArticlePage = () => {
     setDeleting(true);
     try {
       await deleteArticle(id);
-      toast.success('Article deleted successfully!');
+      toast.success('🗑️ Article deleted successfully!');
       navigate('/');
     } catch (error) {
+      const status = error.response?.status;
       const message = error.response?.data?.message || 'Failed to delete article.';
-      toast.error(message);
+      
+      if (status === 401) {
+        toast.error('Please login to delete this article');
+      } else if (status === 403) {
+        toast.error("You don't have permission to delete this article");
+      } else {
+        toast.error(message);
+      }
       console.error('[ArticlePage] Delete error:', error);
     } finally {
       setDeleting(false);

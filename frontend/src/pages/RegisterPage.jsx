@@ -54,7 +54,6 @@ const RegisterPage = () => {
     const { name } = e.target;
     setTouched(prev => ({ ...prev, [name]: true }));
     
-    // Validate on blur
     const validationErrors = validateRegistration(formData);
     setErrors(prev => ({ ...prev, ...validationErrors }));
   };
@@ -62,7 +61,6 @@ const RegisterPage = () => {
   const validate = () => {
     const validationErrors = validateRegistration(formData);
     setErrors(validationErrors);
-    // Mark all fields as touched
     const allTouched = Object.keys(formData).reduce((acc, key) => {
       acc[key] = true;
       return acc;
@@ -108,9 +106,10 @@ const RegisterPage = () => {
           )}
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Username *</label>
+            <label className={styles.label} htmlFor="username">Username *</label>
             <input
               type="text"
+              id="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
@@ -123,9 +122,10 @@ const RegisterPage = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Email *</label>
+            <label className={styles.label} htmlFor="email">Email *</label>
             <input
               type="email"
+              id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -138,9 +138,10 @@ const RegisterPage = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Phone (Optional)</label>
+            <label className={styles.label} htmlFor="phone">Phone (Optional)</label>
             <input
               type="tel"
+              id="phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
@@ -153,9 +154,10 @@ const RegisterPage = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Password *</label>
+            <label className={styles.label} htmlFor="password">Password *</label>
             <input
               type="password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -184,9 +186,10 @@ const RegisterPage = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Confirm Password *</label>
+            <label className={styles.label} htmlFor="confirmPassword">Confirm Password *</label>
             <input
               type="password"
+              id="confirmPassword"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
